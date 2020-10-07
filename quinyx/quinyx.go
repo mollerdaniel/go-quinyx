@@ -99,8 +99,8 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 	return req, nil
 }
 
-// Response is a GitHub API response. This wraps the standard http.Response
-// returned from GitHub and provides convenient access to things like
+// Response is a Quinyx API response. This wraps the standard http.Response
+// returned from Quinyx and provides convenient access to things like
 // pagination links.
 type Response struct {
 	*http.Response
@@ -213,7 +213,7 @@ func CheckResponse(r *http.Response) error {
 	if err == nil && data != nil {
 		json.Unmarshal(data, errorResponse)
 	}
-	// Re-populate error response body because GitHub error responses are often
+	// Re-populate error response body because Quinyx error responses are often
 	// undocumented and inconsistent.
 	// Issue #1136, #540.
 	r.Body = ioutil.NopCloser(bytes.NewBuffer(data))
@@ -228,17 +228,6 @@ type ErrorResponse struct {
 	Response *http.Response // HTTP response that caused this error
 	Message  string         `json:"message"` // error message
 	Errors   []Error        `json:"errors"`  // more detail on individual errors
-	// Block is only populated on certain types of errors such as code 451.
-	// See https://developer.github.com/changes/2016-03-17-the-451-status-code-is-now-supported/
-	// for more information.
-	Block *struct {
-		Reason    string     `json:"reason,omitempty"`
-		CreatedAt *Timestamp `json:"created_at,omitempty"`
-	} `json:"block,omitempty"`
-	// Most errors will also include a documentation_url field pointing
-	// to some content that might help you resolve the error, see
-	// https://docs.github.com/en/rest/reference/#client-errors
-	DocumentationURL string `json:"documentation_url,omitempty"`
 }
 
 func (r *ErrorResponse) Error() string {
