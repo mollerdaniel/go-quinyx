@@ -1,2 +1,2 @@
 # go-quinyx
-go-github is a Go client library for accessing the Quinyx REST API
+go-quinyx is a Go client library for accessing the Quinyx REST API
