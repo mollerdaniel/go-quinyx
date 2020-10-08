@@ -9,7 +9,7 @@ import (
 	"golang.org/x/oauth2/clientcredentials"
 )
 
-func ExampleNewLimiter() {
+func ExampleClient() {
 	ctx := context.Background()
 	urlValues := url.Values{}
 	urlValues.Set("grant_type", "client_credentials")
