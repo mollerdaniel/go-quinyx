@@ -98,7 +98,7 @@ func (tt *TagType) UnmarshalJSON(b []byte) error {
 
 // GetAllCategories gets all Categories
 func (s *TagsService) GetAllCategories(ctx context.Context) ([]*TagCategory, *Response, error) {
-	u := "/tags/categories"
+	u := "tags/categories"
 	req, err := s.client.NewRequest("GET", u, nil)
 	if err != nil {
 		return nil, nil, err
@@ -113,7 +113,7 @@ func (s *TagsService) GetAllCategories(ctx context.Context) ([]*TagCategory, *Re
 
 // GetCategory from an categoryExternalID
 func (s *TagsService) GetCategory(ctx context.Context, categoryExternalID string) (*TagCategory, *Response, error) {
-	u := fmt.Sprintf("/tags/categories/%v", categoryExternalID)
+	u := fmt.Sprintf("tags/categories/%v", categoryExternalID)
 	req, err := s.client.NewRequest("GET", u, nil)
 	if err != nil {
 		return nil, nil, err
@@ -129,7 +129,7 @@ func (s *TagsService) GetCategory(ctx context.Context, categoryExternalID string
 // GetAllTags based on categoryExternalID
 // While the documentation says it should return all, it actually only returns one tag.
 func (s *TagsService) GetAllTags(ctx context.Context, categoryExternalID string) (*Tag, *Response, error) {
-	u := fmt.Sprintf("/tags/categories/%v/tags", categoryExternalID)
+	u := fmt.Sprintf("tags/categories/%v/tags", categoryExternalID)
 	req, err := s.client.NewRequest("GET", u, nil)
 	if err != nil {
 		return nil, nil, err
@@ -144,7 +144,7 @@ func (s *TagsService) GetAllTags(ctx context.Context, categoryExternalID string)
 
 // GetTag returns the specified tag by external tag category id and external tag id
 func (s *TagsService) GetTag(ctx context.Context, categoryExternalID string, tagExternalID string) (*Tag, *Response, error) {
-	u := fmt.Sprintf("/tags/categories/%v/tags/%v", categoryExternalID, tagExternalID)
+	u := fmt.Sprintf("tags/categories/%v/tags/%v", categoryExternalID, tagExternalID)
 	req, err := s.client.NewRequest("GET", u, nil)
 	if err != nil {
 		return nil, nil, err
@@ -159,7 +159,7 @@ func (s *TagsService) GetTag(ctx context.Context, categoryExternalID string, tag
 
 // CreateTag creates and then returns the tag
 func (s *TagsService) CreateTag(ctx context.Context, categoryExternalID string, tag *Tag) (*Tag, *Response, error) {
-	u := fmt.Sprintf("/tags/categories/%v/tags", categoryExternalID)
+	u := fmt.Sprintf("tags/categories/%v/tags", categoryExternalID)
 	req, err := s.client.NewRequest("POST", u, tag)
 	if err != nil {
 		return nil, nil, err
@@ -174,7 +174,7 @@ func (s *TagsService) CreateTag(ctx context.Context, categoryExternalID string, 
 
 // UpdateTag using a tagdelta object where set values will be changed
 func (s *TagsService) UpdateTag(ctx context.Context, categoryExternalID string, tagExternalID string, tag *Tag) (*Tag, *Response, error) {
-	u := fmt.Sprintf("/tags/categories/%v/tags/%v", categoryExternalID, tagExternalID)
+	u := fmt.Sprintf("tags/categories/%v/tags/%v", categoryExternalID, tagExternalID)
 
 	// See documentation for limitations on changing categoryExternalID
 	// https://api.quinyx.com/v2/docs/swagger-ui.html?urls.primaryName=tags#/tag-integration-api-controller/updateTagByExternalIdUsingPUT
@@ -197,7 +197,7 @@ func (s *TagsService) UpdateTag(ctx context.Context, categoryExternalID string, 
 
 // DeleteTag removes the tag
 func (s *TagsService) DeleteTag(ctx context.Context, categoryExternalID string, tagExternalID string) (*Response, error) {
-	u := fmt.Sprintf("/tags/categories/%v/tags/%v", categoryExternalID, tagExternalID)
+	u := fmt.Sprintf("tags/categories/%v/tags/%v", categoryExternalID, tagExternalID)
 	req, err := s.client.NewRequest("DELETE", u, nil)
 	if err != nil {
 		return nil, err

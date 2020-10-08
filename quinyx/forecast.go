@@ -115,7 +115,7 @@ const (
 
 // UploadActualData sends raw datapoints to Quinyx Forecast API
 func (s *ForecastService) UploadActualData(ctx context.Context, appendData bool, dil *DataProviderInputList) (*Response, error) {
-	u := fmt.Sprintf("/forecasts/actual-data?appendData=%v", appendData)
+	u := fmt.Sprintf("forecasts/actual-data?appendData=%v", appendData)
 	if dil != nil {
 		if len(dil.DataProviderInputs) > maxRowsPerCall {
 			return nil, fmt.Errorf("The total amount of data rows must not exceed 366 in a single call")
@@ -135,7 +135,7 @@ func (s *ForecastService) UploadActualData(ctx context.Context, appendData bool,
 
 // UploadBudgetData sends budget datapoints to Quinyx Forecast API
 func (s *ForecastService) UploadBudgetData(ctx context.Context, appendData bool, dil *DataProviderInputList) (*Response, error) {
-	u := fmt.Sprintf("/forecasts/budget-data?appendData=%v", appendData)
+	u := fmt.Sprintf("forecasts/budget-data?appendData=%v", appendData)
 	if dil != nil {
 		if len(dil.DataProviderInputs) > maxRowsPerCall {
 			return nil, fmt.Errorf("The total amount of data rows must not exceed 366 in a single call")
@@ -176,7 +176,7 @@ func (g *EditCalculatedOptions) hasRequiredFields() bool {
 // GetActualData gets the actual data previously uploaded for the given forecast variable.
 // The range between these two dates can not exceed 120 days.
 func (s *ForecastService) GetActualData(ctx context.Context, externalForecastVariableID string, requestoptions *RequestOptions) ([]*DataProvider, *Response, error) {
-	u := fmt.Sprintf("/forecasts/forecast-variables/%v/actual-data", externalForecastVariableID)
+	u := fmt.Sprintf("forecasts/forecast-variables/%v/actual-data", externalForecastVariableID)
 	if !requestoptions.hasRequiredFields() {
 		return nil, nil, fmt.Errorf("Required fields in the Options not provided, see docs")
 	}
@@ -202,7 +202,7 @@ func (s *ForecastService) GetActualData(ctx context.Context, externalForecastVar
 // This operation will also delete the corresponding calculated forecast data.
 // The startTime and endTime must be at the start of hour and the range between these two dates can not exceed 120 days.
 func (s *ForecastService) DeleteActualData(ctx context.Context, externalForecastVariableID string, requestoptions *RequestOptions) (*Response, error) {
-	u := fmt.Sprintf("/forecasts/forecast-variables/%v/actual-data", externalForecastVariableID)
+	u := fmt.Sprintf("forecasts/forecast-variables/%v/actual-data", externalForecastVariableID)
 	if !requestoptions.hasRequiredFields() {
 		return nil, fmt.Errorf("Required fields in the Options not provided, see docs")
 	}
@@ -225,7 +225,7 @@ func (s *ForecastService) DeleteActualData(ctx context.Context, externalForecast
 // GetActualDataStream gets the actual data previously uploaded for the given forecast variable.
 // The range between these two dates can not exceed 120 days.
 func (s *ForecastService) GetActualDataStream(ctx context.Context, externalForecastVariableID string, requestoptions *RequestOptions) ([]*DataProvider, *Response, error) {
-	u := fmt.Sprintf("/forecasts/forecast-variables/%v/actual-data-stream", externalForecastVariableID)
+	u := fmt.Sprintf("forecasts/forecast-variables/%v/actual-data-stream", externalForecastVariableID)
 	if !requestoptions.hasRequiredFields() {
 		return nil, nil, fmt.Errorf("Required fields in the Options not provided, see docs")
 	}
@@ -249,7 +249,7 @@ func (s *ForecastService) GetActualDataStream(ctx context.Context, externalForec
 // GetAggregatedData gets the aggregated data for the given forecast variable.
 // The range between these two dates can not exceed 120 days.
 func (s *ForecastService) GetAggregatedData(ctx context.Context, externalForecastVariableID string, requestoptions *RequestOptions) ([]*AggregatedPayload, *Response, error) {
-	u := fmt.Sprintf("/forecasts/forecast-variables/%v/aggregated-data", externalForecastVariableID)
+	u := fmt.Sprintf("forecasts/forecast-variables/%v/aggregated-data", externalForecastVariableID)
 	if !requestoptions.hasRequiredFields() {
 		return nil, nil, fmt.Errorf("Required fields in the Options not provided, see docs")
 	}
@@ -273,7 +273,7 @@ func (s *ForecastService) GetAggregatedData(ctx context.Context, externalForecas
 // GetCalculatedForecast gets the calculated forecast for the given forecast variable.
 // The range between these two dates can not exceed 120 days.
 func (s *ForecastService) GetCalculatedForecast(ctx context.Context, externalForecastVariableID string, requestoptions *RequestOptions) ([]*CalculatedForecast, *Response, error) {
-	u := fmt.Sprintf("/forecasts/forecast-variables/%v/calculated-forecast", externalForecastVariableID)
+	u := fmt.Sprintf("forecasts/forecast-variables/%v/calculated-forecast", externalForecastVariableID)
 	if !requestoptions.hasRequiredFields() {
 		return nil, nil, fmt.Errorf("Required fields in the Options not provided, see docs")
 	}
@@ -296,7 +296,7 @@ func (s *ForecastService) GetCalculatedForecast(ctx context.Context, externalFor
 
 // EditCalculatedForecast changes the calculated forecast.
 func (s *ForecastService) EditCalculatedForecast(ctx context.Context, externalForecastVariableID string, externalForecastConfigurationID string, requestoptions *EditCalculatedOptions, modrequest *EditCalculatedRequest) (*Response, error) {
-	u := fmt.Sprintf("/forecasts/forecast-variables/%v/forecast-configurations/%v/edit-forecast", externalForecastVariableID, externalForecastConfigurationID)
+	u := fmt.Sprintf("forecasts/forecast-variables/%v/forecast-configurations/%v/edit-forecast", externalForecastVariableID, externalForecastConfigurationID)
 	if !requestoptions.hasRequiredFields() {
 		return nil, fmt.Errorf("Required fields in the Options not provided, see docs")
 	}
@@ -319,7 +319,7 @@ func (s *ForecastService) EditCalculatedForecast(ctx context.Context, externalFo
 // GetForecastData gets the uploaded forecast data for the given forecast variable.
 // The range between these two dates can not exceed 120 days.
 func (s *ForecastService) GetForecastData(ctx context.Context, externalForecastVariableID string, requestoptions *RequestOptions) ([]*DataProvider, *Response, error) {
-	u := fmt.Sprintf("/forecasts/forecast-variables/%v/forecast-data", externalForecastVariableID)
+	u := fmt.Sprintf("forecasts/forecast-variables/%v/forecast-data", externalForecastVariableID)
 	if !requestoptions.hasRequiredFields() {
 		return nil, nil, fmt.Errorf("Required fields in the Options not provided, see docs")
 	}
@@ -343,7 +343,7 @@ func (s *ForecastService) GetForecastData(ctx context.Context, externalForecastV
 // DeleteForecastData deletes the previously uploaded forecast data for the the given forecast variable.
 // The startTime and endTime must be at the start of hour and the range between these two dates can not exceed 120 days.
 func (s *ForecastService) DeleteForecastData(ctx context.Context, externalForecastVariableID string, requestoptions *RequestOptions) (*Response, error) {
-	u := fmt.Sprintf("/forecasts/forecast-variables/%v/forecast-data", externalForecastVariableID)
+	u := fmt.Sprintf("forecasts/forecast-variables/%v/forecast-data", externalForecastVariableID)
 	if !requestoptions.hasRequiredFields() {
 		return nil, fmt.Errorf("Required fields in the Options not provided, see docs")
 	}
@@ -367,7 +367,7 @@ func (s *ForecastService) DeleteForecastData(ctx context.Context, externalForeca
 // Resolution of datapoints must match expected resolution of variable.
 // The total amount of data rows must not exceed 366
 func (s *ForecastService) UploadPredictedData(ctx context.Context, inlist *PredictedDataInputList) (*Response, error) {
-	u := fmt.Sprintf("/forecasts/predicted-data")
+	u := fmt.Sprintf("forecasts/predicted-data")
 	if inlist != nil {
 		if len(inlist.ForecastPredictions) > maxRowsPerCall {
 			return nil, fmt.Errorf("The total amount of data rows must not exceed 366 in a single call")
