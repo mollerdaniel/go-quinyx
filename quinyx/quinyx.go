@@ -37,7 +37,8 @@ type Client struct {
 	common service // Reuse a single struct instead of allocating one for each service on the heap.
 
 	// Services used for talking to different parts of the Quinyx API.
-	Tags *TagsService
+	Tags     *TagsService
+	Forecast *ForecastService
 }
 
 type service struct {
@@ -52,11 +53,12 @@ func NewClient(httpClient *http.Client) *Client {
 	if httpClient == nil {
 		httpClient = &http.Client{}
 	}
-	baseURL, _ := url.Parse(defaultBaseURL)
+	baseURL, _ := url.Parse(defaultBaseURL + "/v2/")
 
 	c := &Client{client: httpClient, BaseURL: baseURL, UserAgent: userAgent}
 	c.common.client = c
 	c.Tags = (*TagsService)(&c.common)
+	c.Forecast = (*ForecastService)(&c.common)
 	return c
 }
 
@@ -104,12 +106,13 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 // pagination links.
 type Response struct {
 	*http.Response
+	QuinyxUID string
 }
 
 // newResponse creates a new Response for the provided http.Response.
 // r must not be nil.
 func newResponse(r *http.Response) *Response {
-	response := &Response{Response: r}
+	response := &Response{Response: r, QuinyxUID: r.Header.Get(headerQuinyxUID)}
 	return response
 }
 
@@ -257,3 +260,6 @@ func (e *Error) UnmarshalJSON(data []byte) error {
 	}
 	return nil
 }
+
+// String returns pointer to a newly created string value
+func String(v string) *string { return &v }

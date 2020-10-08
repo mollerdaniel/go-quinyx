@@ -16,7 +16,7 @@ func TestGetAllCategories(t *testing.T) {
 	client, mux, _, teardown := setup()
 	defer teardown()
 
-	mux.HandleFunc("/categories", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/tags/categories", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
 		fmt.Fprint(w, `[
 			{
@@ -45,7 +45,7 @@ func TestGetCategory(t *testing.T) {
 	client, mux, _, teardown := setup()
 	defer teardown()
 
-	mux.HandleFunc("/categories/example", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/tags/categories/example", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
 		fmt.Fprint(w, `
 			{
@@ -74,7 +74,7 @@ func TestGetAllTags(t *testing.T) {
 	client, mux, _, teardown := setup()
 	defer teardown()
 
-	mux.HandleFunc("/categories/example/tags", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/tags/categories/example/tags", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
 		fmt.Fprint(w, `
 		{
@@ -146,7 +146,7 @@ func TestGetTag(t *testing.T) {
 	client, mux, _, teardown := setup()
 	defer teardown()
 
-	mux.HandleFunc("/categories/example/tags/eid", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/tags/categories/example/tags/eid", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
 		fmt.Fprint(w, `
 		{
@@ -241,14 +241,13 @@ func TestCreateTag(t *testing.T) {
 		UniqueScheduling: true,
 		UnitExternalID:   "uid",
 	}
-	mux.HandleFunc("/categories/example/tags", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/tags/categories/example/tags", func(w http.ResponseWriter, r *http.Request) {
 
 		testMethod(t, r, "POST")
 		tagbody := &Tag{}
 		body, err := ioutil.ReadAll(r.Body)
 		assert.Equal(t, `{"categoryExternalId":"example","code":"c","coordinates":[{"latitude":12.1234,"longitude":24.1234,"radius":15}],"customFields":[{"label":"l","value":"v"}],"endDate":"2019-10-12T07:20:50.52Z","externalId":"eid","information":"inf","name":"n","periods":[{"from":"2019-10-12T07:20:50.52Z","to":"2019-10-12T12:20:50.52Z","hours":5,"type":"PERIOD","count":9}],"startDate":"2020-10-12T07:20:50.52Z","uniqueScheduling":true,"unitExternalId":"uid"}
 `, string(body))
-		fmt.Println(string(body))
 		assert.NilError(t, err)
 		err = json.Unmarshal(body, tagbody)
 		assert.NilError(t, err)
@@ -289,14 +288,13 @@ func TestUpdateTag(t *testing.T) {
 		UniqueScheduling: true,
 		UnitExternalID:   "uid",
 	}
-	mux.HandleFunc("/categories/example/tags/eid", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/tags/categories/example/tags/eid", func(w http.ResponseWriter, r *http.Request) {
 
 		testMethod(t, r, "PUT")
 		tagbody := &Tag{}
 		body, err := ioutil.ReadAll(r.Body)
 		assert.Equal(t, `{"categoryExternalId":"example","code":"c","coordinates":[{"latitude":12.1234,"longitude":24.1234,"radius":15}],"customFields":[{"label":"l","value":"v"}],"endDate":"2019-10-12T07:20:50.52Z","externalId":"eid","information":"inf","name":"n","periods":[{"from":"2019-10-12T07:20:50.52Z","to":"2019-10-12T12:20:50.52Z","hours":5,"type":"PERIOD","count":9}],"startDate":"2020-10-12T07:20:50.52Z","uniqueScheduling":true,"unitExternalId":"uid"}
 `, string(body))
-		fmt.Println(string(body))
 		assert.NilError(t, err)
 		err = json.Unmarshal(body, tagbody)
 		assert.NilError(t, err)
@@ -304,7 +302,7 @@ func TestUpdateTag(t *testing.T) {
 		assert.NilError(t, err)
 		fmt.Fprint(w, string(json))
 	})
-	mux.HandleFunc("/categories/nochange/tags/eid", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/tags/categories/nochange/tags/eid", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "PUT")
 		tagbody := &Tag{}
 		body, err := ioutil.ReadAll(r.Body)
@@ -328,7 +326,7 @@ func TestDeleteTag(t *testing.T) {
 	client, mux, _, teardown := setup()
 	defer teardown()
 
-	mux.HandleFunc("/categories/example/tags/eid", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/tags/categories/example/tags/eid", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "DELETE")
 	})
 	_, err := client.Tags.DeleteTag(context.Background(), "example", "eid")
