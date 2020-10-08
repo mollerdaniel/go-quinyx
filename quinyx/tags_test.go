@@ -32,11 +32,13 @@ func TestGetAllCategories(t *testing.T) {
 	assert.NilError(t, err)
 
 	want := []*TagCategory{
-		{Color: "blue",
-			ExternalID: "eid",
-			TagID:      123,
-			Name:       "n",
-			TagType:    CostCenter},
+		{
+			Color:      String("blue"),
+			ExternalID: String("eid"),
+			TagID:      Int32(123),
+			Name:       String("n"),
+			TagType:    CostCenter,
+		},
 	}
 	assert.DeepEqual(t, categoriesResponse, want)
 }
@@ -61,10 +63,10 @@ func TestGetCategory(t *testing.T) {
 	assert.NilError(t, err)
 
 	want := &TagCategory{
-		Color:      "blue",
-		ExternalID: "example",
-		TagID:      123,
-		Name:       "string",
+		Color:      String("blue"),
+		ExternalID: String("example"),
+		TagID:      Int32(123),
+		Name:       String("string"),
 		TagType:    CostCenter,
 	}
 	assert.DeepEqual(t, categoriesResponse, want)
@@ -116,28 +118,35 @@ func TestGetAllTags(t *testing.T) {
 	assert.NilError(t, err)
 
 	want := &Tag{
-		CategoryExternalID: "example",
-		Code:               "c",
-		Coordinates: []Coordinate{
-			{Latitude: 12.1234, Longitude: 24.1234, Radius: 15},
+		CategoryExternalID: String("example"),
+		Code:               String("c"),
+		Coordinates: []*Coordinate{
+			{
+				Latitude:  Float64(12.1234),
+				Longitude: Float64(24.1234),
+				Radius:    Int32(15),
+			},
 		},
-		CustomFields: []CustomField{
-			{Label: "l", Value: "v"},
+		CustomFields: []*CustomField{
+			{
+				Label: String("l"),
+				Value: String("v"),
+			},
 		},
-		EndDate:     Timestamp{time.Date(2019, time.October, 12, 07, 20, 50, 520000000, time.UTC)},
-		ExternalID:  "eid",
-		Information: "inf",
-		Name:        "n",
-		Periods: []Period{{
-			From:  Timestamp{time.Date(2019, time.October, 12, 07, 20, 50, 520000000, time.UTC)},
-			To:    Timestamp{time.Date(2019, time.October, 12, 12, 20, 50, 520000000, time.UTC)},
-			Hours: 5,
+		EndDate:     &Timestamp{time.Date(2019, time.October, 12, 07, 20, 50, 520000000, time.UTC)},
+		ExternalID:  String("eid"),
+		Information: String("inf"),
+		Name:        String("n"),
+		Periods: []*Period{{
+			From:  &Timestamp{time.Date(2019, time.October, 12, 07, 20, 50, 520000000, time.UTC)},
+			To:    &Timestamp{time.Date(2019, time.October, 12, 12, 20, 50, 520000000, time.UTC)},
+			Hours: Float64(5),
 			Type:  PeriodTypePeriod,
-			Count: 9,
+			Count: Float64(9),
 		}},
-		StartDate:        Timestamp{time.Date(2020, time.October, 12, 07, 20, 50, 520000000, time.UTC)},
-		UniqueScheduling: true,
-		UnitExternalID:   "uid",
+		StartDate:        &Timestamp{time.Date(2020, time.October, 12, 07, 20, 50, 520000000, time.UTC)},
+		UniqueScheduling: Bool(true),
+		UnitExternalID:   String("uid"),
 	}
 	assert.DeepEqual(t, tag, want)
 }
@@ -188,28 +197,35 @@ func TestGetTag(t *testing.T) {
 	assert.NilError(t, err)
 
 	want := &Tag{
-		CategoryExternalID: "example",
-		Code:               "c",
-		Coordinates: []Coordinate{
-			{Latitude: 12.1234, Longitude: 24.1234, Radius: 15},
+		CategoryExternalID: String("example"),
+		Code:               String("c"),
+		Coordinates: []*Coordinate{
+			{
+				Latitude:  Float64(12.1234),
+				Longitude: Float64(24.1234),
+				Radius:    Int32(15),
+			},
 		},
-		CustomFields: []CustomField{
-			{Label: "l", Value: "v"},
+		CustomFields: []*CustomField{
+			{
+				Label: String("l"),
+				Value: String("v"),
+			},
 		},
-		EndDate:     Timestamp{time.Date(2019, time.October, 12, 07, 20, 50, 520000000, time.UTC)},
-		ExternalID:  "eid",
-		Information: "inf",
-		Name:        "n",
-		Periods: []Period{{
-			From:  Timestamp{time.Date(2019, time.October, 12, 07, 20, 50, 520000000, time.UTC)},
-			To:    Timestamp{time.Date(2019, time.October, 12, 12, 20, 50, 520000000, time.UTC)},
-			Hours: 5,
+		EndDate:     &Timestamp{time.Date(2019, time.October, 12, 07, 20, 50, 520000000, time.UTC)},
+		ExternalID:  String("eid"),
+		Information: String("inf"),
+		Name:        String("n"),
+		Periods: []*Period{{
+			From:  &Timestamp{time.Date(2019, time.October, 12, 07, 20, 50, 520000000, time.UTC)},
+			To:    &Timestamp{time.Date(2019, time.October, 12, 12, 20, 50, 520000000, time.UTC)},
+			Hours: Float64(5),
 			Type:  PeriodTypePeriod,
-			Count: 9,
+			Count: Float64(9),
 		}},
-		StartDate:        Timestamp{time.Date(2020, time.October, 12, 07, 20, 50, 520000000, time.UTC)},
-		UniqueScheduling: true,
-		UnitExternalID:   "uid",
+		StartDate:        &Timestamp{time.Date(2020, time.October, 12, 07, 20, 50, 520000000, time.UTC)},
+		UniqueScheduling: Bool(true),
+		UnitExternalID:   String("uid"),
 	}
 	assert.DeepEqual(t, tag, want)
 }
@@ -218,28 +234,35 @@ func TestCreateTag(t *testing.T) {
 	client, mux, _, teardown := setup()
 	defer teardown()
 	want := &Tag{
-		CategoryExternalID: "example",
-		Code:               "c",
-		Coordinates: []Coordinate{
-			{Latitude: 12.1234, Longitude: 24.1234, Radius: 15},
+		CategoryExternalID: String("example"),
+		Code:               String("c"),
+		Coordinates: []*Coordinate{
+			{
+				Latitude:  Float64(12.1234),
+				Longitude: Float64(24.1234),
+				Radius:    Int32(15),
+			},
 		},
-		CustomFields: []CustomField{
-			{Label: "l", Value: "v"},
+		CustomFields: []*CustomField{
+			{
+				Label: String("l"),
+				Value: String("v"),
+			},
 		},
-		EndDate:     Timestamp{time.Date(2019, time.October, 12, 07, 20, 50, 520000000, time.UTC)},
-		ExternalID:  "eid",
-		Information: "inf",
-		Name:        "n",
-		Periods: []Period{{
-			From:  Timestamp{time.Date(2019, time.October, 12, 07, 20, 50, 520000000, time.UTC)},
-			To:    Timestamp{time.Date(2019, time.October, 12, 12, 20, 50, 520000000, time.UTC)},
-			Hours: 5,
+		EndDate:     &Timestamp{time.Date(2019, time.October, 12, 07, 20, 50, 520000000, time.UTC)},
+		ExternalID:  String("eid"),
+		Information: String("inf"),
+		Name:        String("n"),
+		Periods: []*Period{{
+			From:  &Timestamp{time.Date(2019, time.October, 12, 07, 20, 50, 520000000, time.UTC)},
+			To:    &Timestamp{time.Date(2019, time.October, 12, 12, 20, 50, 520000000, time.UTC)},
+			Hours: Float64(5),
 			Type:  PeriodTypePeriod,
-			Count: 9,
+			Count: Float64(9),
 		}},
-		StartDate:        Timestamp{time.Date(2020, time.October, 12, 07, 20, 50, 520000000, time.UTC)},
-		UniqueScheduling: true,
-		UnitExternalID:   "uid",
+		StartDate:        &Timestamp{time.Date(2020, time.October, 12, 07, 20, 50, 520000000, time.UTC)},
+		UniqueScheduling: Bool(true),
+		UnitExternalID:   String("uid"),
 	}
 	mux.HandleFunc("/tags/categories/example/tags", func(w http.ResponseWriter, r *http.Request) {
 
@@ -265,28 +288,35 @@ func TestUpdateTag(t *testing.T) {
 	client, mux, _, teardown := setup()
 	defer teardown()
 	want := &Tag{
-		CategoryExternalID: "example",
-		Code:               "c",
-		Coordinates: []Coordinate{
-			{Latitude: 12.1234, Longitude: 24.1234, Radius: 15},
+		CategoryExternalID: String("example"),
+		Code:               String("c"),
+		Coordinates: []*Coordinate{
+			{
+				Latitude:  Float64(12.1234),
+				Longitude: Float64(24.1234),
+				Radius:    Int32(15),
+			},
 		},
-		CustomFields: []CustomField{
-			{Label: "l", Value: "v"},
+		CustomFields: []*CustomField{
+			{
+				Label: String("l"),
+				Value: String("v"),
+			},
 		},
-		EndDate:     Timestamp{time.Date(2019, time.October, 12, 07, 20, 50, 520000000, time.UTC)},
-		ExternalID:  "eid",
-		Information: "inf",
-		Name:        "n",
-		Periods: []Period{{
-			From:  Timestamp{time.Date(2019, time.October, 12, 07, 20, 50, 520000000, time.UTC)},
-			To:    Timestamp{time.Date(2019, time.October, 12, 12, 20, 50, 520000000, time.UTC)},
-			Hours: 5,
+		EndDate:     &Timestamp{time.Date(2019, time.October, 12, 07, 20, 50, 520000000, time.UTC)},
+		ExternalID:  String("eid"),
+		Information: String("inf"),
+		Name:        String("n"),
+		Periods: []*Period{{
+			From:  &Timestamp{time.Date(2019, time.October, 12, 07, 20, 50, 520000000, time.UTC)},
+			To:    &Timestamp{time.Date(2019, time.October, 12, 12, 20, 50, 520000000, time.UTC)},
+			Hours: Float64(5),
 			Type:  PeriodTypePeriod,
-			Count: 9,
+			Count: Float64(9),
 		}},
-		StartDate:        Timestamp{time.Date(2020, time.October, 12, 07, 20, 50, 520000000, time.UTC)},
-		UniqueScheduling: true,
-		UnitExternalID:   "uid",
+		StartDate:        &Timestamp{time.Date(2020, time.October, 12, 07, 20, 50, 520000000, time.UTC)},
+		UniqueScheduling: Bool(true),
+		UnitExternalID:   String("uid"),
 	}
 	mux.HandleFunc("/tags/categories/example/tags/eid", func(w http.ResponseWriter, r *http.Request) {
 
@@ -317,7 +347,7 @@ func TestUpdateTag(t *testing.T) {
 	tag, _, err := client.Tags.UpdateTag(context.Background(), "example", "eid", want)
 	assert.NilError(t, err)
 	assert.DeepEqual(t, tag, want)
-	want.CategoryExternalID = "blah"
+	want.CategoryExternalID = String("blah")
 	_, _, err = client.Tags.UpdateTag(context.Background(), "nochange", "eid", want)
 	assert.ErrorContains(t, err, "categoryExternalID cannot be changed")
 }

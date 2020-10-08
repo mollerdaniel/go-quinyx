@@ -14,48 +14,48 @@ type TagsService service
 
 // Tag defines a Quinyx TagIntegration object
 type Tag struct {
-	CategoryExternalID string        `json:"categoryExternalId,omitempty"`
-	Code               string        `json:"code,omitempty"`
-	Coordinates        []Coordinate  `json:"coordinates"`
-	CustomFields       []CustomField `json:"customFields"`
-	EndDate            Timestamp     `json:"endDate"`
-	ExternalID         string        `json:"externalId,omitempty"`
-	Information        string        `json:"information,omitempty"`
-	Name               string        `json:"name,omitempty"`
-	Periods            []Period      `json:"periods"`
-	StartDate          Timestamp     `json:"startDate,omitempty"`
-	UniqueScheduling   bool          `json:"uniqueScheduling,omitempty"`
-	UnitExternalID     string        `json:"unitExternalId,omitempty"`
+	CategoryExternalID *string        `json:"categoryExternalId,omitempty"`
+	Code               *string        `json:"code,omitempty"`
+	Coordinates        []*Coordinate  `json:"coordinates,omitempty"`
+	CustomFields       []*CustomField `json:"customFields,omitempty"`
+	EndDate            *Timestamp     `json:"endDate,omitempty"`
+	ExternalID         *string        `json:"externalId,omitempty"`
+	Information        *string        `json:"information,omitempty"`
+	Name               *string        `json:"name,omitempty"`
+	Periods            []*Period      `json:"periods,omitempty"`
+	StartDate          *Timestamp     `json:"startDate,omitempty"`
+	UniqueScheduling   *bool          `json:"uniqueScheduling,omitempty"`
+	UnitExternalID     *string        `json:"unitExternalId,omitempty"`
 }
 
 // Coordinate defines a Geofence using Long Lat and a Radius
 type Coordinate struct {
-	Latitude  float64 `json:"latitude,omitempty"`
-	Longitude float64 `json:"longitude,omitempty"`
-	Radius    int32   `json:"radius,omitempty"`
+	Latitude  *float64 `json:"latitude,omitempty"`
+	Longitude *float64 `json:"longitude,omitempty"`
+	Radius    *int32   `json:"radius,omitempty"`
 }
 
 // CustomField is a Tag custom field
 type CustomField struct {
-	Label string `json:"label,omitempty"`
-	Value string `json:"value,omitempty"`
+	Label *string `json:"label,omitempty"`
+	Value *string `json:"value,omitempty"`
 }
 
 // Period defines a point in time for the tag
 type Period struct {
-	From  Timestamp  `json:"from,omitempty"`
-	To    Timestamp  `json:"to,omitempty"`
-	Hours float64    `json:"hours,omitempty"`
+	From  *Timestamp `json:"from,omitempty"`
+	To    *Timestamp `json:"to,omitempty"`
+	Hours *float64   `json:"hours,omitempty"`
 	Type  PeriodType `json:"type,omitempty"`
-	Count float64    `json:"count,omitempty"`
+	Count *float64   `json:"count,omitempty"`
 }
 
 // TagCategory is a Category of tags
 type TagCategory struct {
-	Color      string  `json:"color,omitempty"`
-	ExternalID string  `json:"externalId,omitempty"`
-	TagID      int32   `json:"id,omitempty"`
-	Name       string  `json:"name,omitempty"`
+	Color      *string `json:"color,omitempty"`
+	ExternalID *string `json:"externalId,omitempty"`
+	TagID      *int32  `json:"id,omitempty"`
+	Name       *string `json:"name,omitempty"`
 	TagType    TagType `json:"tagType,omitempty"`
 }
 
@@ -82,7 +82,6 @@ const (
 
 // UnmarshalJSON TagType enum
 func (tt *TagType) UnmarshalJSON(b []byte) error {
-	// Define a secondary type to avoid ending up with a recursive call to json.Unmarshal
 	type TT TagType
 	var r *TT = (*TT)(tt)
 	err := json.Unmarshal(b, &r)
@@ -96,7 +95,7 @@ func (tt *TagType) UnmarshalJSON(b []byte) error {
 	return errors.New("Invalid leave type")
 }
 
-// GetAllCategories gets all Categories
+// GetAllCategories gets all categories
 func (s *TagsService) GetAllCategories(ctx context.Context) ([]*TagCategory, *Response, error) {
 	u := "tags/categories"
 	req, err := s.client.NewRequest("GET", u, nil)
@@ -111,7 +110,7 @@ func (s *TagsService) GetAllCategories(ctx context.Context) ([]*TagCategory, *Re
 	return categories, resp, nil
 }
 
-// GetCategory from an categoryExternalID
+// GetCategory from a categoryExternalID
 func (s *TagsService) GetCategory(ctx context.Context, categoryExternalID string) (*TagCategory, *Response, error) {
 	u := fmt.Sprintf("tags/categories/%v", categoryExternalID)
 	req, err := s.client.NewRequest("GET", u, nil)
@@ -178,7 +177,7 @@ func (s *TagsService) UpdateTag(ctx context.Context, categoryExternalID string, 
 
 	// See documentation for limitations on changing categoryExternalID
 	// https://api.quinyx.com/v2/docs/swagger-ui.html?urls.primaryName=tags#/tag-integration-api-controller/updateTagByExternalIdUsingPUT
-	if tag.CategoryExternalID != categoryExternalID {
+	if *tag.CategoryExternalID != categoryExternalID {
 		return nil, nil, fmt.Errorf("categoryExternalID cannot be changed")
 	}
 

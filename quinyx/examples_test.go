@@ -38,10 +38,7 @@ func ExampleClient() {
 	// Call Tags Service to get all categories
 	categories, res, err := q.Tags.GetAllCategories(ctx)
 	if err != nil {
-		if res != nil {
-			log.Fatalf("Error: %v RequestUID: %s", err, res.QuinyxUID)
-		}
-		log.Fatalf("Error: %v", err)
+		log.Fatalf("Error: %v RequestUID: %s", err, res.GetQuinyxUID())
 	}
 
 	// Dump each category to console

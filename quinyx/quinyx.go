@@ -120,6 +120,14 @@ type Response struct {
 	QuinyxUID string
 }
 
+// GetQuinyxUID extracts the X-Quinyx-Uid header used for request tracing as a string.
+func (r *Response) GetQuinyxUID() string {
+	if r != nil {
+		return r.QuinyxUID
+	}
+	return ""
+}
+
 // newResponse creates a new Response for the provided http.Response.
 // r must not be nil.
 func newResponse(r *http.Response) *Response {
@@ -280,3 +288,6 @@ func Float64(v float64) *float64 { return &v }
 
 // Int32 returns pointer to a newly created int32 value
 func Int32(v int32) *int32 { return &v }
+
+// Bool returns pointer to a newly created bool value
+func Bool(v bool) *bool { return &v }
