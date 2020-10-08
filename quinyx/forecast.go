@@ -3,6 +3,7 @@ package quinyx
 import (
 	"context"
 	"fmt"
+	"math"
 	"time"
 
 	"github.com/google/go-querystring/query"
@@ -14,89 +15,103 @@ import (
 type ForecastService service
 
 const maxRowsPerCall = 366
+const maxDaysRange = 120
+
+var (
+	// ErrorReqfieldsMissing is the error returned when the request Options does not have all required fields defined
+	ErrorReqfieldsMissing = fmt.Errorf("Required fields in the Options not provided, see docs")
+	// ErrorDaterangeTooWide is the error returned when the requested daterange in days is to wide
+	ErrorDaterangeTooWide = fmt.Errorf("The amount of days between StartTime and EndTime is above the limit, see docs")
+)
 
 // DataProviderInputList is the object used to update actual-data in Quinyx Forecast
 type DataProviderInputList struct {
 	DataProviderInputs []DataProvider `json:"requests"`
 }
 
-// PredictedDataInputList PredictedDataInputList
+// PredictedDataInputList provides a list of ForecastPredictions
 type PredictedDataInputList struct {
 	ForecastPredictions []ForecastPrediction `json:"requests"`
 }
 
-// ForecastPrediction ForecastPrediction
+// ForecastPrediction defines the prediction object
 type ForecastPrediction struct {
-	ExternalForecastVariableID      string    `json:"externalForecastVariableId,omitempty"`
-	ExternalForecastConfigurationID string    `json:"externalForecastConfigurationId,omitempty"`
-	ExternalUnitID                  string    `json:"externalUnitId,omitempty"`
-	ExternalSectionID               string    `json:"externalSectionId,omitempty"`
-	RunIdentifier                   string    `json:"runIdentifier,omitempty"`
-	RunTimestamp                    Timestamp `json:"runTimestamp,omitempty"`
-	Payloads                        []Payload `json:"forecastDataPayload"`
+	ExternalForecastVariableID      *string    `json:"externalForecastVariableId,omitempty"`
+	ExternalForecastConfigurationID *string    `json:"externalForecastConfigurationId,omitempty"`
+	ExternalUnitID                  *string    `json:"externalUnitId,omitempty"`
+	ExternalSectionID               *string    `json:"externalSectionId,omitempty"`
+	RunIdentifier                   *string    `json:"runIdentifier,omitempty"`
+	RunTimestamp                    *Timestamp `json:"runTimestamp,omitempty"`
+	Payloads                        []*Payload `json:"forecastDataPayload"`
 }
 
 // DataProvider is the input object to feed Quinyx forecast
 type DataProvider struct {
-	ExternalForecastVariableID string    `json:"externalForecastVariableId,omitempty"`
-	ExternalUnitID             string    `json:"externalUnitId,omitempty"`
-	ExternalSectionID          string    `json:"externalSectionId,omitempty"`
-	DataPayload                []Payload `json:"forecastDataPayload,omitempty"`
+	ExternalForecastVariableID *string    `json:"externalForecastVariableId,omitempty"`
+	ExternalUnitID             *string    `json:"externalUnitId,omitempty"`
+	ExternalSectionID          *string    `json:"externalSectionId,omitempty"`
+	DataPayload                []*Payload `json:"forecastDataPayload,omitempty"`
 }
 
 // Payload is the raw data object
 type Payload struct {
-	Data      float64   `json:"data,omitempty"`
-	Timestamp Timestamp `json:"timestamp,omitempty"`
+	Data      *float64   `json:"data,omitempty"`
+	Timestamp *Timestamp `json:"timestamp,omitempty"`
 }
 
 // AggregatedPayload is the aggregated data object
 type AggregatedPayload struct {
-	Data      float64   `json:"data,omitempty"`
-	EndTime   Timestamp `json:"endTime,omitempty"`
-	StartTime Timestamp `json:"startTime,omitempty"`
+	Data      *float64   `json:"data,omitempty"`
+	EndTime   *Timestamp `json:"endTime,omitempty"`
+	StartTime *Timestamp `json:"startTime,omitempty"`
 }
 
 // RequestOptions is the options object for querying forecast
 type RequestOptions struct {
-	StartTime         time.Time `url:"startTime,omitempty"`
-	EndTime           time.Time `url:"endTime,omitempty"`
-	ExternalSectionID *string   `url:"externalSectionId,omitempty"`
-	ExternalUnitID    *string   `url:"externalUnitId,omitempty"`
+	// StartTime is required
+	StartTime time.Time `url:"startTime"`
+	// EndTime is required
+	EndTime time.Time `url:"endTime"`
+	// ExternalSectionID is optional
+	ExternalSectionID *string `url:"externalSectionId,omitempty"`
+	// ExternalUnitID is required
+	ExternalUnitID *string `url:"externalUnitId"`
 }
 
 // EditCalculatedOptions is the options object for editing calculated forecast
 type EditCalculatedOptions struct {
+	// ExternalSectionID is optional
 	ExternalSectionID *string `url:"externalSectionId,omitempty"`
-	ExternalUnitID    *string `url:"externalUnitId,omitempty"`
+	// ExternalUnitID is required
+	ExternalUnitID *string `url:"externalUnitId"`
 }
 
 // CalculatedForecast is the calculated forecast generated in Quinyx Forecast
 type CalculatedForecast struct {
-	DataPayload                     []CalculatedPayload `json:"dataPayload,omitempty"`
-	ExternalForecastConfigurationID *string             `json:"externalForecastConfigurationId,omitempty"`
-	ExternalSectionID               *string             `json:"externalSectionId,omitempty"`
-	ExternalUnitID                  *string             `json:"externalUnitId,omitempty"`
+	DataPayload                     []*CalculatedPayload `json:"dataPayload,omitempty"`
+	ExternalForecastConfigurationID *string              `json:"externalForecastConfigurationId,omitempty"`
+	ExternalSectionID               *string              `json:"externalSectionId,omitempty"`
+	ExternalUnitID                  *string              `json:"externalUnitId,omitempty"`
 }
 
 // CalculatedPayload is the payload data object for calculated data
 type CalculatedPayload struct {
-	Data       float64   `json:"data,omitempty"`
-	EditedData float64   `json:"editedData,omitempty"`
-	StartTime  Timestamp `json:"startTime,omitempty"`
-	EndTime    Timestamp `json:"endTime,omitempty"`
+	Data       *float64   `json:"data,omitempty"`
+	EditedData *float64   `json:"editedData,omitempty"`
+	StartTime  *Timestamp `json:"startTime,omitempty"`
+	EndTime    *Timestamp `json:"endTime,omitempty"`
 }
 
 // EditCalculatedRequest is the object used to edit calculated forecast
 type EditCalculatedRequest struct {
-	RepetitionSetup        bool      `json:"repetitionSetup,omitempty"`
-	StartTime              Timestamp `json:"startTime,omitempty"`
-	EndTime                Timestamp `json:"endTime,omitempty"`
-	PercentageModification float64   `json:"percentageModification,omitempty"`
-	NewValueForPeriod      float64   `json:"newValueForPeriod,omitempty"`
-	WeekDays               []Weekday `json:"weekdays,omitempty"`
-	RepetitionEndDate      Timestamp `json:"repetitionEndDate,omitempty"`
-	WeekPattern            int32     `json:"weekPattern,omitempty"`
+	RepetitionSetup        bool      `json:"repetitionSetup"`
+	StartTime              Timestamp `json:"startTime"`
+	EndTime                Timestamp `json:"endTime"`
+	PercentageModification float64   `json:"percentageModification"`
+	NewValueForPeriod      float64   `json:"newValueForPeriod"`
+	WeekDays               []Weekday `json:"weekdays"`
+	RepetitionEndDate      Timestamp `json:"repetitionEndDate"`
+	WeekPattern            int32     `json:"weekPattern"`
 }
 
 // Weekday defines a weekday
@@ -163,6 +178,10 @@ func (g *RequestOptions) hasRequiredFields() bool {
 	return true
 }
 
+func (g *RequestOptions) dayDistance() float64 {
+	return math.Floor(g.EndTime.Sub(g.StartTime).Hours() / 24)
+}
+
 func (g *EditCalculatedOptions) hasRequiredFields() bool {
 	if g == nil {
 		return false
@@ -178,7 +197,10 @@ func (g *EditCalculatedOptions) hasRequiredFields() bool {
 func (s *ForecastService) GetActualData(ctx context.Context, externalForecastVariableID string, requestoptions *RequestOptions) ([]*DataProvider, *Response, error) {
 	u := fmt.Sprintf("forecasts/forecast-variables/%v/actual-data", externalForecastVariableID)
 	if !requestoptions.hasRequiredFields() {
-		return nil, nil, fmt.Errorf("Required fields in the Options not provided, see docs")
+		return nil, nil, ErrorReqfieldsMissing
+	}
+	if requestoptions.dayDistance() > maxDaysRange {
+		return nil, nil, ErrorDaterangeTooWide
 	}
 	req, err := s.client.NewRequest("GET", u, nil)
 	if err != nil {
@@ -197,14 +219,17 @@ func (s *ForecastService) GetActualData(ctx context.Context, externalForecastVar
 	return dp, resp, nil
 }
 
-// DeleteActualData deletes actual data
+// DeleteActualData deletes actual data.
 // Deleting the actual data previously uploaded for the given forecast variable.
 // This operation will also delete the corresponding calculated forecast data.
 // The startTime and endTime must be at the start of hour and the range between these two dates can not exceed 120 days.
 func (s *ForecastService) DeleteActualData(ctx context.Context, externalForecastVariableID string, requestoptions *RequestOptions) (*Response, error) {
 	u := fmt.Sprintf("forecasts/forecast-variables/%v/actual-data", externalForecastVariableID)
 	if !requestoptions.hasRequiredFields() {
-		return nil, fmt.Errorf("Required fields in the Options not provided, see docs")
+		return nil, ErrorReqfieldsMissing
+	}
+	if requestoptions.dayDistance() > maxDaysRange {
+		return nil, ErrorDaterangeTooWide
 	}
 	req, err := s.client.NewRequest("DELETE", u, nil)
 	if err != nil {
@@ -227,7 +252,10 @@ func (s *ForecastService) DeleteActualData(ctx context.Context, externalForecast
 func (s *ForecastService) GetActualDataStream(ctx context.Context, externalForecastVariableID string, requestoptions *RequestOptions) ([]*DataProvider, *Response, error) {
 	u := fmt.Sprintf("forecasts/forecast-variables/%v/actual-data-stream", externalForecastVariableID)
 	if !requestoptions.hasRequiredFields() {
-		return nil, nil, fmt.Errorf("Required fields in the Options not provided, see docs")
+		return nil, nil, ErrorReqfieldsMissing
+	}
+	if requestoptions.dayDistance() > maxDaysRange {
+		return nil, nil, ErrorDaterangeTooWide
 	}
 	req, err := s.client.NewRequest("GET", u, nil)
 	if err != nil {
@@ -251,7 +279,10 @@ func (s *ForecastService) GetActualDataStream(ctx context.Context, externalForec
 func (s *ForecastService) GetAggregatedData(ctx context.Context, externalForecastVariableID string, requestoptions *RequestOptions) ([]*AggregatedPayload, *Response, error) {
 	u := fmt.Sprintf("forecasts/forecast-variables/%v/aggregated-data", externalForecastVariableID)
 	if !requestoptions.hasRequiredFields() {
-		return nil, nil, fmt.Errorf("Required fields in the Options not provided, see docs")
+		return nil, nil, ErrorReqfieldsMissing
+	}
+	if requestoptions.dayDistance() > maxDaysRange {
+		return nil, nil, ErrorDaterangeTooWide
 	}
 	req, err := s.client.NewRequest("GET", u, nil)
 	if err != nil {
@@ -275,7 +306,10 @@ func (s *ForecastService) GetAggregatedData(ctx context.Context, externalForecas
 func (s *ForecastService) GetCalculatedForecast(ctx context.Context, externalForecastVariableID string, requestoptions *RequestOptions) ([]*CalculatedForecast, *Response, error) {
 	u := fmt.Sprintf("forecasts/forecast-variables/%v/calculated-forecast", externalForecastVariableID)
 	if !requestoptions.hasRequiredFields() {
-		return nil, nil, fmt.Errorf("Required fields in the Options not provided, see docs")
+		return nil, nil, ErrorReqfieldsMissing
+	}
+	if requestoptions.dayDistance() > maxDaysRange {
+		return nil, nil, ErrorDaterangeTooWide
 	}
 	req, err := s.client.NewRequest("GET", u, nil)
 	if err != nil {
@@ -298,7 +332,7 @@ func (s *ForecastService) GetCalculatedForecast(ctx context.Context, externalFor
 func (s *ForecastService) EditCalculatedForecast(ctx context.Context, externalForecastVariableID string, externalForecastConfigurationID string, requestoptions *EditCalculatedOptions, modrequest *EditCalculatedRequest) (*Response, error) {
 	u := fmt.Sprintf("forecasts/forecast-variables/%v/forecast-configurations/%v/edit-forecast", externalForecastVariableID, externalForecastConfigurationID)
 	if !requestoptions.hasRequiredFields() {
-		return nil, fmt.Errorf("Required fields in the Options not provided, see docs")
+		return nil, ErrorReqfieldsMissing
 	}
 	req, err := s.client.NewRequest("POST", u, modrequest)
 	if err != nil {
@@ -321,7 +355,10 @@ func (s *ForecastService) EditCalculatedForecast(ctx context.Context, externalFo
 func (s *ForecastService) GetForecastData(ctx context.Context, externalForecastVariableID string, requestoptions *RequestOptions) ([]*DataProvider, *Response, error) {
 	u := fmt.Sprintf("forecasts/forecast-variables/%v/forecast-data", externalForecastVariableID)
 	if !requestoptions.hasRequiredFields() {
-		return nil, nil, fmt.Errorf("Required fields in the Options not provided, see docs")
+		return nil, nil, ErrorReqfieldsMissing
+	}
+	if requestoptions.dayDistance() > maxDaysRange {
+		return nil, nil, ErrorDaterangeTooWide
 	}
 	req, err := s.client.NewRequest("GET", u, nil)
 	if err != nil {
@@ -345,7 +382,10 @@ func (s *ForecastService) GetForecastData(ctx context.Context, externalForecastV
 func (s *ForecastService) DeleteForecastData(ctx context.Context, externalForecastVariableID string, requestoptions *RequestOptions) (*Response, error) {
 	u := fmt.Sprintf("forecasts/forecast-variables/%v/forecast-data", externalForecastVariableID)
 	if !requestoptions.hasRequiredFields() {
-		return nil, fmt.Errorf("Required fields in the Options not provided, see docs")
+		return nil, ErrorReqfieldsMissing
+	}
+	if requestoptions.dayDistance() > maxDaysRange {
+		return nil, ErrorDaterangeTooWide
 	}
 	req, err := s.client.NewRequest("DELETE", u, nil)
 	if err != nil {

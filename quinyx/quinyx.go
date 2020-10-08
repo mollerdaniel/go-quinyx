@@ -274,3 +274,9 @@ func (e *Error) UnmarshalJSON(data []byte) error {
 
 // String returns pointer to a newly created string value
 func String(v string) *string { return &v }
+
+// Float64 returns pointer to a newly created float64 value
+func Float64(v float64) *float64 { return &v }
+
+// Int32 returns pointer to a newly created int32 value
+func Int32(v int32) *int32 { return &v }

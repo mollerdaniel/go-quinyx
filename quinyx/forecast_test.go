@@ -18,13 +18,13 @@ func TestUploadActualData(t *testing.T) {
 	want := &DataProviderInputList{
 		DataProviderInputs: []DataProvider{
 			{
-				ExternalForecastVariableID: "a",
-				ExternalSectionID:          "b",
-				ExternalUnitID:             "c",
-				DataPayload: []Payload{
+				ExternalForecastVariableID: String("a"),
+				ExternalSectionID:          String("b"),
+				ExternalUnitID:             String("c"),
+				DataPayload: []*Payload{
 					{
-						Data:      123,
-						Timestamp: Timestamp{time.Date(2019, time.October, 12, 07, 20, 50, 520000000, time.UTC)},
+						Data:      Float64(123),
+						Timestamp: &Timestamp{time.Date(2019, time.October, 12, 07, 20, 50, 520000000, time.UTC)},
 					},
 				},
 			},
@@ -52,13 +52,13 @@ func TestUploadBudgetData(t *testing.T) {
 	want := &DataProviderInputList{
 		DataProviderInputs: []DataProvider{
 			{
-				ExternalForecastVariableID: "a",
-				ExternalSectionID:          "b",
-				ExternalUnitID:             "c",
-				DataPayload: []Payload{
+				ExternalForecastVariableID: String("a"),
+				ExternalSectionID:          String("b"),
+				ExternalUnitID:             String("c"),
+				DataPayload: []*Payload{
 					{
-						Data:      123,
-						Timestamp: Timestamp{time.Date(2019, time.October, 12, 07, 20, 50, 520000000, time.UTC)},
+						Data:      Float64(123),
+						Timestamp: &Timestamp{time.Date(2019, time.October, 12, 07, 20, 50, 520000000, time.UTC)},
 					},
 				},
 			},
@@ -91,13 +91,13 @@ func TestGetActualData(t *testing.T) {
 
 	want := []*DataProvider{
 		{
-			ExternalForecastVariableID: "b",
-			ExternalSectionID:          "c",
-			ExternalUnitID:             "d",
-			DataPayload: []Payload{
+			ExternalForecastVariableID: String("b"),
+			ExternalSectionID:          String("c"),
+			ExternalUnitID:             String("d"),
+			DataPayload: []*Payload{
 				{
-					Data:      123,
-					Timestamp: Timestamp{time.Date(2019, time.October, 12, 07, 20, 50, 520000000, time.UTC)},
+					Data:      Float64(123),
+					Timestamp: &Timestamp{time.Date(2019, time.October, 12, 07, 20, 50, 520000000, time.UTC)},
 				},
 			},
 		},
@@ -137,13 +137,13 @@ func TestGetActualDataStream(t *testing.T) {
 
 	want := []*DataProvider{
 		{
-			ExternalForecastVariableID: "b",
-			ExternalSectionID:          "c",
-			ExternalUnitID:             "d",
-			DataPayload: []Payload{
+			ExternalForecastVariableID: String("b"),
+			ExternalSectionID:          String("c"),
+			ExternalUnitID:             String("d"),
+			DataPayload: []*Payload{
 				{
-					Data:      123,
-					Timestamp: Timestamp{time.Date(2019, time.October, 12, 07, 20, 50, 520000000, time.UTC)},
+					Data:      Float64(123),
+					Timestamp: &Timestamp{time.Date(2019, time.October, 12, 07, 20, 50, 520000000, time.UTC)},
 				},
 			},
 		},
@@ -183,9 +183,9 @@ func TestGetAggregatedData(t *testing.T) {
 
 	want := []*AggregatedPayload{
 		{
-			Data:      1234,
-			StartTime: Timestamp{time.Date(2019, time.October, 12, 07, 20, 50, 520000000, time.UTC)},
-			EndTime:   Timestamp{time.Date(2019, time.October, 12, 07, 21, 50, 520000000, time.UTC)},
+			Data:      Float64(1234),
+			StartTime: &Timestamp{time.Date(2019, time.October, 12, 07, 20, 50, 520000000, time.UTC)},
+			EndTime:   &Timestamp{time.Date(2019, time.October, 12, 07, 21, 50, 520000000, time.UTC)},
 		},
 	}
 	mux.HandleFunc("/forecasts/forecast-variables/a/aggregated-data", func(w http.ResponseWriter, r *http.Request) {
@@ -223,12 +223,12 @@ func TestGetCalculatedForecast(t *testing.T) {
 
 	want := []*CalculatedForecast{
 		{
-			DataPayload: []CalculatedPayload{
+			DataPayload: []*CalculatedPayload{
 				{
-					Data:       1234,
-					EditedData: 4321,
-					StartTime:  Timestamp{time.Date(2019, time.October, 12, 07, 20, 50, 520000000, time.UTC)},
-					EndTime:    Timestamp{time.Date(2019, time.October, 12, 07, 21, 50, 520000000, time.UTC)},
+					Data:       Float64(1234),
+					EditedData: Float64(4321),
+					StartTime:  &Timestamp{time.Date(2019, time.October, 12, 07, 20, 50, 520000000, time.UTC)},
+					EndTime:    &Timestamp{time.Date(2019, time.October, 12, 07, 21, 50, 520000000, time.UTC)},
 				},
 			},
 			ExternalForecastConfigurationID: String("b"),
@@ -300,13 +300,13 @@ func TestGetForecastData(t *testing.T) {
 	}
 	want := []*DataProvider{
 		{
-			ExternalForecastVariableID: "a",
-			ExternalSectionID:          "b",
-			ExternalUnitID:             "c",
-			DataPayload: []Payload{
+			ExternalForecastVariableID: String("a"),
+			ExternalSectionID:          String("b"),
+			ExternalUnitID:             String("c"),
+			DataPayload: []*Payload{
 				{
-					Data:      1234.4,
-					Timestamp: Timestamp{time.Date(2019, time.October, 12, 07, 20, 50, 520000000, time.UTC)},
+					Data:      Float64(1234.4),
+					Timestamp: &Timestamp{time.Date(2019, time.October, 12, 07, 20, 50, 520000000, time.UTC)},
 				},
 			},
 		},
@@ -399,16 +399,16 @@ func TestUploadPredictedData(t *testing.T) {
 	want := &PredictedDataInputList{
 		ForecastPredictions: []ForecastPrediction{
 			{
-				ExternalForecastVariableID:      "a",
-				ExternalForecastConfigurationID: "d",
-				ExternalSectionID:               "b",
-				ExternalUnitID:                  "c",
-				RunIdentifier:                   "e",
-				RunTimestamp:                    Timestamp{time.Date(2020, time.October, 12, 07, 20, 50, 520000000, time.UTC)},
-				Payloads: []Payload{
+				ExternalForecastVariableID:      String("a"),
+				ExternalForecastConfigurationID: String("d"),
+				ExternalSectionID:               String("b"),
+				ExternalUnitID:                  String("c"),
+				RunIdentifier:                   String("e"),
+				RunTimestamp:                    &Timestamp{time.Date(2020, time.October, 12, 07, 20, 50, 520000000, time.UTC)},
+				Payloads: []*Payload{
 					{
-						Data:      123,
-						Timestamp: Timestamp{time.Date(2019, time.October, 12, 07, 20, 50, 520000000, time.UTC)},
+						Data:      Float64(123),
+						Timestamp: &Timestamp{time.Date(2019, time.October, 12, 07, 20, 50, 520000000, time.UTC)},
 					},
 				},
 			},
@@ -425,4 +425,19 @@ func TestUploadPredictedData(t *testing.T) {
 
 	_, err := client.Forecast.UploadPredictedData(context.Background(), want)
 	assert.NilError(t, err)
+}
+
+func TestDateRangeCheck(t *testing.T) {
+	options := &RequestOptions{
+		StartTime:      time.Date(2019, time.October, 12, 07, 20, 50, 520000000, time.UTC),
+		EndTime:        time.Date(2019, time.October, 17, 12, 20, 50, 520000000, time.UTC),
+		ExternalUnitID: String("d"),
+	}
+	assert.Equal(t, float64(5), options.dayDistance())
+	options = &RequestOptions{
+		StartTime:      time.Date(2019, time.July, 12, 07, 20, 50, 520000000, time.UTC),
+		EndTime:        time.Date(2019, time.December, 17, 12, 20, 50, 520000000, time.UTC),
+		ExternalUnitID: String("d"),
+	}
+	assert.Assert(t, options.dayDistance() > 120)
 }
