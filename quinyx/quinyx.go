@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	defaultBaseURL = "https://api.quinyx.com/"
+	defaultBaseURL = "https://api.quinyx.com"
 	userAgent      = "go-quinyx"
 
 	headerQuinyxUID = "X-Quinyx-Uid"

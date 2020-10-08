@@ -13,26 +13,29 @@ import (
 )
 
 func main() {
-	// TODO
 	ctx := context.Background()
-	urlValues := url.Values{}
-	urlValues.Set("grant_type", "client_credentials")
+
+	// Oauth2 Config
 	conf := clientcredentials.Config{
 		ClientID:     os.Getenv("CLIENTID"),
 		ClientSecret: os.Getenv("CLIENTSECRET"), // Quinyx API does not accept URLEncoded secrets https://tools.ietf.org/html/rfc6749#section-2.3.1
-		TokenURL:     "https://api-test.quinyx.com/v2/oauth/token",
+		TokenURL:     "https://api-rc.quinyx.com/v2/oauth/token",
 		AuthStyle:    oauth2.AuthStyleInHeader,
 		EndpointParams: url.Values{
 			"grant_type": {"client_credentials"},
 		},
 	}
+
+	// HTTP Client
 	client := conf.Client(ctx)
 
-	q, err := quinyx.NewClient(client, quinyx.String("https://api-test.quinyx.com"))
+	// Quinyx API Client
+	q, err := quinyx.NewClient(client, quinyx.String("https://api-rc.quinyx.com"))
 	if err != nil {
-		log.Fatalf("Error creating a Client: %v", err)
+		log.Fatalf("Error: %v", err)
 	}
 
+	// Call Tags Service to get all categories
 	categories, res, err := q.Tags.GetAllCategories(ctx)
 	if err != nil {
 		if res != nil {
@@ -41,6 +44,7 @@ func main() {
 		log.Fatalf("Error: %v", err)
 	}
 
+	// Dump each category to console
 	for _, tagCategory := range categories {
 		fmt.Println(tagCategory)
 	}
