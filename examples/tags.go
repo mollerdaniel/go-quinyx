@@ -27,7 +27,7 @@ func main() {
 
 	q, err := quinyx.NewClient(client, quinyx.String("https://api-test.quinyx.com/"))
 	if err != nil {
-		log.Fatal("Error creating a Client: %v", err)
+		log.Fatalf("Error creating a Client: %v", err)
 	}
 
 	_, res, err := q.Tags.GetAllTags(ctx, "myexternalid")

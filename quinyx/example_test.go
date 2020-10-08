@@ -20,8 +20,10 @@ func ExampleNewLimiter() {
 		EndpointParams: urlValues,
 	}
 	client := conf.Client(ctx)
-	q, _ := quinyx.NewClient(client)
-
+	q, err := quinyx.NewClient(client, nil)
+	if err != nil {
+		log.Fatalf("Error: %v", err)
+	}
 	_, res, err := q.Tags.GetAllTags(ctx, "myexternalid")
 	if err != nil {
 		if res != nil {
