@@ -49,17 +49,28 @@ type service struct {
 // provided, a new http.Client will be used. To use API methods which require
 // authentication, provide an http.Client that will perform the authentication
 // for you (such as that provided by the golang.org/x/oauth2 library).
-func NewClient(httpClient *http.Client) *Client {
+func NewClient(httpClient *http.Client, customBaseURL *string) (*Client, error) {
 	if httpClient == nil {
 		httpClient = &http.Client{}
 	}
 	baseURL, _ := url.Parse(defaultBaseURL + "/v2/")
-
+	if customBaseURL != nil {
+		newBaseURL, err := url.Parse(*customBaseURL + "/v2/")
+		if err != nil {
+			return nil, fmt.Errorf("Could not parse the customBaseURL: %v", err)
+		}
+		baseURL = newBaseURL
+	}
 	c := &Client{client: httpClient, BaseURL: baseURL, UserAgent: userAgent}
 	c.common.client = c
 	c.Tags = (*TagsService)(&c.common)
 	c.Forecast = (*ForecastService)(&c.common)
-	return c
+	return c, nil
+}
+
+// GetTokenURL returns the Quinyx Token URL
+func (c *Client) GetTokenURL() string {
+	return c.BaseURL.String() + "oauth/token"
 }
 
 // NewRequest creates an API request. A relative URL can be provided in urlStr,
