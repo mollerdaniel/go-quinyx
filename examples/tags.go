@@ -18,7 +18,7 @@ func main() {
 	// Oauth2 Config
 	conf := clientcredentials.Config{
 		ClientID:     os.Getenv("CLIENTID"),
-		ClientSecret: os.Getenv("CLIENTSECRET"), // Quinyx API does not accept URLEncoded secrets https://tools.ietf.org/html/rfc6749#section-2.3.1
+		ClientSecret: os.Getenv("CLIENTSECRET"),
 		TokenURL:     "https://api-rc.quinyx.com/v2/oauth/token",
 		AuthStyle:    oauth2.AuthStyleInHeader,
 		EndpointParams: url.Values{
@@ -41,8 +41,8 @@ func main() {
 		log.Fatalf("Error: %v RequestUID: %s", err, res.GetQuinyxUID())
 	}
 
-	// Dump each category to console
-	for _, tagCategory := range categories {
-		fmt.Println(tagCategory)
+	// Print each category
+	for _, category := range categories {
+		fmt.Println(category)
 	}
 }
