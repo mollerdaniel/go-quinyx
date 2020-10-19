@@ -26,7 +26,7 @@ var (
 
 // DataProviderInputList is the object used to update actual-data in Quinyx Forecast
 type DataProviderInputList struct {
-	DataProviderInputs []DataProvider `json:"requests"`
+	DataProviderInputs []DataProviderInput `json:"requests"`
 }
 
 // PredictedDataInputList provides a list of ForecastPredictions
@@ -45,12 +45,20 @@ type ForecastPrediction struct {
 	Payloads                        []*Payload `json:"forecastDataPayload"`
 }
 
-// DataProvider is the input object to feed Quinyx forecast
-type DataProvider struct {
+// DataProviderInput is the input object to feed Quinyx forecast
+type DataProviderInput struct {
 	ExternalForecastVariableID *string    `json:"externalForecastVariableId,omitempty"`
 	ExternalUnitID             *string    `json:"externalUnitId,omitempty"`
 	ExternalSectionID          *string    `json:"externalSectionId,omitempty"`
 	DataPayload                []*Payload `json:"forecastDataPayload,omitempty"`
+}
+
+// DataProvider is the output object from Quinyx forecast
+type DataProvider struct {
+	ExternalForecastVariableID *string    `json:"externalForecastVariableId,omitempty"`
+	ExternalUnitID             *string    `json:"externalUnitId,omitempty"`
+	ExternalSectionID          *string    `json:"externalSectionId,omitempty"`
+	DataPayload                []*Payload `json:"dataPayload,omitempty"`
 }
 
 // Payload is the raw data object

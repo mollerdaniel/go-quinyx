@@ -16,7 +16,7 @@ func TestUploadActualData(t *testing.T) {
 	client, mux, _, teardown := setup()
 	defer teardown()
 	want := &DataProviderInputList{
-		DataProviderInputs: []DataProvider{
+		DataProviderInputs: []DataProviderInput{
 			{
 				ExternalForecastVariableID: String("a"),
 				ExternalSectionID:          String("b"),
@@ -50,7 +50,7 @@ func TestUploadBudgetData(t *testing.T) {
 	client, mux, _, teardown := setup()
 	defer teardown()
 	want := &DataProviderInputList{
-		DataProviderInputs: []DataProvider{
+		DataProviderInputs: []DataProviderInput{
 			{
 				ExternalForecastVariableID: String("a"),
 				ExternalSectionID:          String("b"),
