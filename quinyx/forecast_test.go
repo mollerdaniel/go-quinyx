@@ -938,13 +938,12 @@ func TestDeleteDynamicRule(t *testing.T) {
 	}
 	wantID := "mycoolID"
 
-	mux.HandleFunc("/forecasts/dynamic-rules", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc(fmt.Sprintf("/forecasts/dynamic-rules/%s", wantID), func(w http.ResponseWriter, r *http.Request) {
 		// Make sure it's DELETE
 		testMethod(t, r, "DELETE")
 
 		// Options are added as Query
 		assert.Equal(t, "d", r.URL.Query().Get("externalUnitId"))
-		assert.Equal(t, wantID, r.URL.Query().Get("externalDynamicRuleId"))
 
 		fmt.Fprint(w, ``)
 	})
@@ -969,13 +968,12 @@ func TestDeleteStaticRule(t *testing.T) {
 	}
 	wantID := "mycoolID"
 
-	mux.HandleFunc("/forecasts/static-rules", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc(fmt.Sprintf("/forecasts/static-rules/%s", wantID), func(w http.ResponseWriter, r *http.Request) {
 		// Make sure it's DELETE
 		testMethod(t, r, "DELETE")
 
 		// Options are added as Query
 		assert.Equal(t, "d", r.URL.Query().Get("externalUnitId"))
-		assert.Equal(t, wantID, r.URL.Query().Get("externalStaticRuleId"))
 
 		fmt.Fprint(w, ``)
 	})
