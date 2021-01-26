@@ -198,6 +198,30 @@ func (s *ForecastService) GetDynamicRules(ctx context.Context, RequestOptions *R
 	return r, resp, nil
 }
 
+// GetStaticRules lists static rules
+func (s *ForecastService) GetStaticRules(ctx context.Context, RequestOptions *RequestOptions) ([]*StaticRule, *Response, error) {
+	var r []*StaticRule
+	u := "forecasts/static-rules"
+	if !RequestOptions.hasRequiredFields() {
+		return r, nil, ErrorReqfieldsMissing
+	}
+	req, err := s.client.NewRequest("GET", u, nil)
+	if err != nil {
+		return r, nil, err
+	}
+	v, err := query.Values(RequestOptions)
+	if err != nil {
+		return r, nil, err
+	}
+	req.URL.RawQuery = v.Encode()
+
+	resp, err := s.client.Do(ctx, req, &r)
+	if err != nil {
+		return r, resp, err
+	}
+	return r, resp, nil
+}
+
 // CreateDynamicRule creates a dynamic rule
 func (s *ForecastService) CreateDynamicRule(ctx context.Context, rule *DynamicRule, RequestOptions *RequestOptions) (*DynamicRule, *Response, error) {
 	var r *DynamicRule
@@ -220,9 +244,52 @@ func (s *ForecastService) CreateDynamicRule(ctx context.Context, rule *DynamicRu
 	return r, resp, err
 }
 
-// UpdateDynamicRule updates the existing rule
+// CreateStaticRule creates a static rule
+func (s *ForecastService) CreateStaticRule(ctx context.Context, rule *StaticRule, RequestOptions *RequestOptions) (*StaticRule, *Response, error) {
+	var r *StaticRule
+	u := "forecasts/static-rules"
+	if !RequestOptions.hasRequiredFields() {
+		return r, nil, ErrorReqfieldsMissing
+	}
+	req, err := s.client.NewRequest("POST", u, rule)
+	if err != nil {
+		return r, nil, err
+	}
+
+	v, err := query.Values(RequestOptions)
+	if err != nil {
+		return r, nil, err
+	}
+	req.URL.RawQuery = v.Encode()
+
+	resp, err := s.client.Do(ctx, req, &r)
+	return r, resp, err
+}
+
+// UpdateDynamicRule updates the existing dynamic rule
 func (s *ForecastService) UpdateDynamicRule(ctx context.Context, rule *DynamicRule, RequestOptions *RequestOptions) (*Response, error) {
 	u := "forecasts/dynamic-rules"
+	if !RequestOptions.hasRequiredFields() {
+		return nil, ErrorReqfieldsMissing
+	}
+
+	req, err := s.client.NewRequest("PUT", u, rule)
+	if err != nil {
+		return nil, err
+	}
+	v, err := query.Values(RequestOptions)
+	if err != nil {
+		return nil, err
+	}
+	req.URL.RawQuery = v.Encode()
+
+	resp, err := s.client.Do(ctx, req, nil)
+	return resp, err
+}
+
+// UpdateStaticRule updates the existing static rule
+func (s *ForecastService) UpdateStaticRule(ctx context.Context, rule *StaticRule, RequestOptions *RequestOptions) (*Response, error) {
+	u := "forecasts/static-rules"
 	if !RequestOptions.hasRequiredFields() {
 		return nil, ErrorReqfieldsMissing
 	}
@@ -262,6 +329,37 @@ func (s *ForecastService) DeleteDynamicRule(ctx context.Context, dynamicRuleID s
 		ExternalDynamicRuleID: dynamicRuleID,
 		ExternalSectionID:     RequestOptions.ExternalSectionID,
 		ExternalUnitID:        RequestOptions.ExternalUnitID,
+	})
+	if err != nil {
+		return nil, err
+	}
+	req.URL.RawQuery = v.Encode()
+
+	resp, err := s.client.Do(ctx, req, nil)
+	return resp, err
+}
+
+// DeleteStaticRule deletes a static rule
+func (s *ForecastService) DeleteStaticRule(ctx context.Context, staticRuleID string, RequestOptions *RequestOptions) (*Response, error) {
+	u := "forecasts/static-rules"
+	if !RequestOptions.hasRequiredFields() {
+		return nil, ErrorReqfieldsMissing
+	}
+
+	// url parameters for static-rule-controller
+	type params struct {
+		ExternalStaticRuleID string  `url:"externalStaticRuleId"`
+		ExternalSectionID    *string `url:"externalSectionId,omitempty"`
+		ExternalUnitID       *string `url:"externalUnitId"`
+	}
+	req, err := s.client.NewRequest("DELETE", u, nil)
+	if err != nil {
+		return nil, err
+	}
+	v, err := query.Values(params{
+		ExternalStaticRuleID: staticRuleID,
+		ExternalSectionID:    RequestOptions.ExternalSectionID,
+		ExternalUnitID:       RequestOptions.ExternalUnitID,
 	})
 	if err != nil {
 		return nil, err
