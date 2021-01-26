@@ -83,7 +83,7 @@ func TestUploadBudgetData(t *testing.T) {
 func TestGetActualData(t *testing.T) {
 	client, mux, _, teardown := setup()
 	defer teardown()
-	options := &RequestOptions{
+	options := &RequestRangeOptions{
 		StartTime:      time.Date(2019, time.October, 12, 07, 20, 50, 520000000, time.UTC),
 		EndTime:        time.Date(2019, time.October, 13, 07, 20, 50, 520000000, time.UTC),
 		ExternalUnitID: String("d"),
@@ -116,7 +116,7 @@ func TestGetActualData(t *testing.T) {
 	dps, _, err := client.Forecast.GetActualData(context.Background(), "a", options)
 	assert.NilError(t, err)
 	assert.DeepEqual(t, want, dps)
-	_, _, err = client.Forecast.GetActualData(context.Background(), "a", &RequestOptions{})
+	_, _, err = client.Forecast.GetActualData(context.Background(), "a", &RequestRangeOptions{})
 	assert.ErrorContains(t, err, "Required fields in the Options")
 
 	mux.HandleFunc("/forecasts/forecast-variables/b/actual-data", func(w http.ResponseWriter, r *http.Request) {
@@ -129,7 +129,7 @@ func TestGetActualData(t *testing.T) {
 func TestGetActualDataStream(t *testing.T) {
 	client, mux, _, teardown := setup()
 	defer teardown()
-	options := &RequestOptions{
+	options := &RequestRangeOptions{
 		StartTime:      time.Date(2019, time.October, 12, 07, 20, 50, 520000000, time.UTC),
 		EndTime:        time.Date(2019, time.October, 13, 07, 20, 50, 520000000, time.UTC),
 		ExternalUnitID: String("d"),
@@ -162,7 +162,7 @@ func TestGetActualDataStream(t *testing.T) {
 	dps, _, err := client.Forecast.GetActualDataStream(context.Background(), "a", options)
 	assert.NilError(t, err)
 	assert.DeepEqual(t, want, dps)
-	_, _, err = client.Forecast.GetActualDataStream(context.Background(), "a", &RequestOptions{})
+	_, _, err = client.Forecast.GetActualDataStream(context.Background(), "a", &RequestRangeOptions{})
 	assert.ErrorContains(t, err, "Required fields in the Options")
 
 	mux.HandleFunc("/forecasts/forecast-variables/b/actual-data-stream", func(w http.ResponseWriter, r *http.Request) {
@@ -175,7 +175,7 @@ func TestGetActualDataStream(t *testing.T) {
 func TestGetAggregatedData(t *testing.T) {
 	client, mux, _, teardown := setup()
 	defer teardown()
-	options := &RequestOptions{
+	options := &RequestRangeOptions{
 		StartTime:      time.Date(2019, time.October, 12, 07, 20, 50, 520000000, time.UTC),
 		EndTime:        time.Date(2019, time.October, 13, 07, 20, 50, 520000000, time.UTC),
 		ExternalUnitID: String("d"),
@@ -202,7 +202,7 @@ func TestGetAggregatedData(t *testing.T) {
 	dps, _, err := client.Forecast.GetAggregatedData(context.Background(), "a", options)
 	assert.NilError(t, err)
 	assert.DeepEqual(t, want, dps)
-	_, _, err = client.Forecast.GetAggregatedData(context.Background(), "a", &RequestOptions{})
+	_, _, err = client.Forecast.GetAggregatedData(context.Background(), "a", &RequestRangeOptions{})
 	assert.ErrorContains(t, err, "Required fields in the Options")
 
 	mux.HandleFunc("/forecasts/forecast-variables/b/aggregated-data", func(w http.ResponseWriter, r *http.Request) {
@@ -215,7 +215,7 @@ func TestGetAggregatedData(t *testing.T) {
 func TestGetCalculatedForecast(t *testing.T) {
 	client, mux, _, teardown := setup()
 	defer teardown()
-	options := &RequestOptions{
+	options := &RequestRangeOptions{
 		StartTime:      time.Date(2019, time.October, 12, 07, 20, 50, 520000000, time.UTC),
 		EndTime:        time.Date(2019, time.October, 13, 07, 20, 50, 520000000, time.UTC),
 		ExternalUnitID: String("d"),
@@ -250,7 +250,7 @@ func TestGetCalculatedForecast(t *testing.T) {
 	dps, _, err := client.Forecast.GetCalculatedForecast(context.Background(), "a", options)
 	assert.NilError(t, err)
 	assert.DeepEqual(t, want, dps)
-	_, _, err = client.Forecast.GetCalculatedForecast(context.Background(), "a", &RequestOptions{})
+	_, _, err = client.Forecast.GetCalculatedForecast(context.Background(), "a", &RequestRangeOptions{})
 	assert.ErrorContains(t, err, "Required fields in the Options")
 
 	mux.HandleFunc("/forecasts/forecast-variables/b/calculated-forecast", func(w http.ResponseWriter, r *http.Request) {
@@ -263,7 +263,7 @@ func TestGetCalculatedForecast(t *testing.T) {
 func TestEditCalculatedForecast(t *testing.T) {
 	client, mux, _, teardown := setup()
 	defer teardown()
-	options := &EditCalculatedOptions{
+	options := &RequestOptions{
 		ExternalUnitID: String("d"),
 	}
 
@@ -293,7 +293,7 @@ func TestEditCalculatedForecast(t *testing.T) {
 func TestGetForecastData(t *testing.T) {
 	client, mux, _, teardown := setup()
 	defer teardown()
-	options := &RequestOptions{
+	options := &RequestRangeOptions{
 		StartTime:      time.Date(2019, time.October, 12, 07, 20, 50, 520000000, time.UTC),
 		EndTime:        time.Date(2019, time.October, 13, 07, 20, 50, 520000000, time.UTC),
 		ExternalUnitID: String("d"),
@@ -326,7 +326,7 @@ func TestGetForecastData(t *testing.T) {
 	dps, _, err := client.Forecast.GetForecastData(context.Background(), "a", options)
 	assert.NilError(t, err)
 	assert.DeepEqual(t, want, dps)
-	_, _, err = client.Forecast.GetForecastData(context.Background(), "a", &RequestOptions{})
+	_, _, err = client.Forecast.GetForecastData(context.Background(), "a", &RequestRangeOptions{})
 	assert.ErrorContains(t, err, "Required fields in the Options")
 
 	mux.HandleFunc("/forecasts/forecast-variables/b/forecast-data", func(w http.ResponseWriter, r *http.Request) {
@@ -339,7 +339,7 @@ func TestGetForecastData(t *testing.T) {
 func TestDeleteForecast(t *testing.T) {
 	client, mux, _, teardown := setup()
 	defer teardown()
-	options := &RequestOptions{
+	options := &RequestRangeOptions{
 		StartTime:      time.Date(2019, time.October, 12, 07, 20, 50, 520000000, time.UTC),
 		EndTime:        time.Date(2019, time.October, 13, 07, 20, 50, 520000000, time.UTC),
 		ExternalUnitID: String("d"),
@@ -355,7 +355,7 @@ func TestDeleteForecast(t *testing.T) {
 
 	_, err := client.Forecast.DeleteForecastData(context.Background(), "a", options)
 	assert.NilError(t, err)
-	_, err = client.Forecast.DeleteForecastData(context.Background(), "a", &RequestOptions{})
+	_, err = client.Forecast.DeleteForecastData(context.Background(), "a", &RequestRangeOptions{})
 	assert.ErrorContains(t, err, "Required fields in the Options")
 
 	mux.HandleFunc("/forecasts/forecast-variables/b/forecast-data", func(w http.ResponseWriter, r *http.Request) {
@@ -368,7 +368,7 @@ func TestDeleteForecast(t *testing.T) {
 func TestDeleteActualData(t *testing.T) {
 	client, mux, _, teardown := setup()
 	defer teardown()
-	options := &RequestOptions{
+	options := &RequestRangeOptions{
 		StartTime:      time.Date(2019, time.October, 12, 07, 20, 50, 520000000, time.UTC),
 		EndTime:        time.Date(2019, time.October, 13, 07, 20, 50, 520000000, time.UTC),
 		ExternalUnitID: String("d"),
@@ -383,7 +383,7 @@ func TestDeleteActualData(t *testing.T) {
 
 	_, err := client.Forecast.DeleteActualData(context.Background(), "a", options)
 	assert.NilError(t, err)
-	_, err = client.Forecast.DeleteActualData(context.Background(), "a", &RequestOptions{})
+	_, err = client.Forecast.DeleteActualData(context.Background(), "a", &RequestRangeOptions{})
 	assert.ErrorContains(t, err, "Required fields in the Options")
 
 	mux.HandleFunc("/forecasts/forecast-variables/b/actual-data", func(w http.ResponseWriter, r *http.Request) {
@@ -428,16 +428,566 @@ func TestUploadPredictedData(t *testing.T) {
 }
 
 func TestDateRangeCheck(t *testing.T) {
-	options := &RequestOptions{
+	options := &RequestRangeOptions{
 		StartTime:      time.Date(2019, time.October, 12, 07, 20, 50, 520000000, time.UTC),
 		EndTime:        time.Date(2019, time.October, 17, 12, 20, 50, 520000000, time.UTC),
 		ExternalUnitID: String("d"),
 	}
 	assert.Equal(t, float64(5), options.dayDistance())
-	options = &RequestOptions{
+	options = &RequestRangeOptions{
 		StartTime:      time.Date(2019, time.July, 12, 07, 20, 50, 520000000, time.UTC),
 		EndTime:        time.Date(2019, time.December, 17, 12, 20, 50, 520000000, time.UTC),
 		ExternalUnitID: String("d"),
 	}
 	assert.Assert(t, options.dayDistance() > 120)
+}
+
+func TestGetDynamicRules(t *testing.T) {
+	client, mux, _, teardown := setup()
+	defer teardown()
+	options := &RequestOptions{
+		ExternalUnitID: String("d"),
+	}
+
+	want := []*DynamicRule{
+		{
+			Amount: 123,
+			StartTime: LocalTime{
+				Hour:   17,
+				Minute: 30,
+				Nano:   1234,
+				Second: 13,
+			},
+			EndTime: LocalTime{
+				Hour:   18,
+				Minute: 31,
+				Nano:   12345,
+				Second: 14,
+			},
+			ExternalID:                 "e",
+			ExternalForecastVariableID: "efvid",
+			ShiftTypes: []ShiftType{
+				{
+					Amount:      321,
+					ShiftTypeID: "abc",
+				},
+			},
+			Weekdays: []Weekday{Monday},
+		},
+	}
+	mux.HandleFunc("/forecasts/dynamic-rules", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		assert.Equal(t, "d", r.URL.Query().Get("externalUnitId"))
+		json, err := json.Marshal(&want)
+		assert.NilError(t, err)
+		fmt.Fprint(w, string(json))
+	})
+
+	dps, _, err := client.Forecast.GetDynamicRules(context.Background(), options)
+	assert.NilError(t, err)
+	assert.DeepEqual(t, want, dps)
+	_, _, err = client.Forecast.GetDynamicRules(context.Background(), &RequestOptions{})
+	assert.ErrorContains(t, err, "Required fields in the Options")
+
+	mux.HandleFunc("/forecasts/forecast-variables/b/actual-data", func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, "foo", r.URL.Query().Get("externalSectionID"))
+	})
+	options.ExternalSectionID = String("foo")
+	client.Forecast.GetDynamicRules(context.Background(), options)
+}
+
+func TestGetStaticRules(t *testing.T) {
+	client, mux, _, teardown := setup()
+	defer teardown()
+	options := &RequestOptions{
+		ExternalUnitID: String("d"),
+	}
+
+	want := []*StaticRule{
+		{
+			Comment:   "hello there",
+			StartDate: time.Date(2019, time.July, 12, 00, 00, 00, 0, time.UTC),
+			EndDate:   time.Date(2019, time.July, 13, 10, 00, 00, 0, time.UTC),
+			StartTime: LocalTime{
+				Hour:   17,
+				Minute: 30,
+				Nano:   1234,
+				Second: 13,
+			},
+			EndTime: LocalTime{
+				Hour:   18,
+				Minute: 31,
+				Nano:   12345,
+				Second: 14,
+			},
+			ExternalID: "e",
+			ShiftType: ShiftType{
+
+				Amount:      321,
+				ShiftTypeID: "abc",
+			},
+			Weekdays: []Weekday{Monday},
+		},
+	}
+	mux.HandleFunc("/forecasts/static-rules", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		assert.Equal(t, "d", r.URL.Query().Get("externalUnitId"))
+		json, err := json.Marshal(&want)
+		assert.NilError(t, err)
+		fmt.Fprint(w, string(json))
+	})
+
+	dps, _, err := client.Forecast.GetStaticRules(context.Background(), options)
+	assert.NilError(t, err)
+	assert.DeepEqual(t, want, dps)
+	_, _, err = client.Forecast.GetStaticRules(context.Background(), &RequestOptions{})
+	assert.ErrorContains(t, err, "Required fields in the Options")
+
+	mux.HandleFunc("/forecasts/forecast-variables/b/actual-data", func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, "foo", r.URL.Query().Get("externalSectionID"))
+	})
+	options.ExternalSectionID = String("foo")
+	client.Forecast.GetStaticRules(context.Background(), options)
+}
+
+func TestGetDynamicRulesMatchingExampleJSON(t *testing.T) {
+	client, mux, _, teardown := setup()
+	defer teardown()
+	options := &RequestOptions{
+		ExternalUnitID: String("d"),
+	}
+
+	want := []*DynamicRule{
+		{
+			Amount: 123,
+			StartTime: LocalTime{
+				Hour:   17,
+				Minute: 30,
+				Nano:   1234,
+				Second: 13,
+			},
+			EndTime: LocalTime{
+				Hour:   18,
+				Minute: 31,
+				Nano:   12345,
+				Second: 14,
+			},
+			ExternalID:                 "e",
+			ExternalForecastVariableID: "efvid",
+			ShiftTypes: []ShiftType{
+				{
+					Amount:      321,
+					ShiftTypeID: "abc",
+				},
+			},
+			Weekdays: []Weekday{Monday},
+		},
+	}
+
+	mux.HandleFunc("/forecasts/dynamic-rules", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, string(`[
+			{
+			  "amount": 123,
+			  "endTime": {
+				"hour": 18,
+				"minute": 31,
+				"nano": 12345,
+				"second": 14
+			  },
+			  "externalId": "e",
+			  "forecastExternalVariableId": "efvid",
+			  "shiftTypes": [
+				{
+				  "amount": 321,
+				  "externalShiftTypeId": "abc"
+				}
+			  ],
+			  "startTime": {
+				"hour": 17,
+				"minute": 30,
+				"nano": 1234,
+				"second": 13
+			  },
+			  "weekdays": [
+				"0"
+			  ]
+			}
+		  ]`))
+	})
+	dps, _, err := client.Forecast.GetDynamicRules(context.Background(), options)
+	assert.NilError(t, err)
+	assert.DeepEqual(t, want, dps)
+}
+
+func TestGetStaticRulesMatchingExampleJSON(t *testing.T) {
+	client, mux, _, teardown := setup()
+	defer teardown()
+	options := &RequestOptions{
+		ExternalUnitID: String("d"),
+	}
+
+	want := []*StaticRule{
+		{
+			Comment:   "hello there",
+			StartDate: time.Date(2019, time.July, 12, 0, 0, 0, 0, time.UTC),
+			EndDate:   time.Date(2019, time.July, 13, 0, 0, 0, 0, time.UTC),
+			StartTime: LocalTime{
+				Hour:   17,
+				Minute: 30,
+				Nano:   1234,
+				Second: 13,
+			},
+			EndTime: LocalTime{
+				Hour:   18,
+				Minute: 31,
+				Nano:   12345,
+				Second: 14,
+			},
+			ExternalID: "e",
+			ShiftType: ShiftType{
+
+				Amount:      321,
+				ShiftTypeID: "abc",
+			},
+			Weekdays: []Weekday{Monday},
+		},
+	}
+
+	mux.HandleFunc("/forecasts/static-rules", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, string(`[
+			{
+			  "comment": "hello there",
+			  "startDate": "2019-07-12T00:00:00Z",
+			  "endDate": "2019-07-13T00:00:00Z",
+			  "endTime": {
+				"hour": 18,
+				"minute": 31,
+				"nano": 12345,
+				"second": 14
+			  },
+			  "externalId": "e",
+			  "forecastExternalVariableId": "efvid",
+			  "shiftType": {
+				"amount": 321,
+				"externalShiftTypeId": "abc"
+			  },
+			  "startTime": {
+				"hour": 17,
+				"minute": 30,
+				"nano": 1234,
+				"second": 13
+			  },
+			  "weekdays": [
+				"0"
+			  ]
+			}
+		  ]`))
+	})
+	dps, _, err := client.Forecast.GetStaticRules(context.Background(), options)
+	assert.NilError(t, err)
+	assert.DeepEqual(t, want, dps)
+}
+
+func TestCreateDynamicRule(t *testing.T) {
+	client, mux, _, teardown := setup()
+	defer teardown()
+	options := &RequestOptions{
+		ExternalUnitID: String("d"),
+	}
+
+	want := DynamicRule{
+
+		Amount: 123,
+		StartTime: LocalTime{
+			Hour:   17,
+			Minute: 30,
+			Nano:   1234,
+			Second: 13,
+		},
+		EndTime: LocalTime{
+			Hour:   18,
+			Minute: 31,
+			Nano:   12345,
+			Second: 14,
+		},
+		ExternalID:                 "e",
+		ExternalForecastVariableID: "efvid",
+		ShiftTypes: []ShiftType{
+			{
+				Amount:      321,
+				ShiftTypeID: "abc",
+			},
+		},
+		Weekdays: []Weekday{Monday},
+	}
+	mux.HandleFunc("/forecasts/dynamic-rules", func(w http.ResponseWriter, r *http.Request) {
+		// Make sure it's POST
+		testMethod(t, r, "POST")
+
+		// Options are added as Query
+		assert.Equal(t, "d", r.URL.Query().Get("externalUnitId"))
+
+		// Body contains the proper JSON
+		body, err := ioutil.ReadAll(r.Body)
+		assert.Equal(t, fmt.Sprintf("%s\n", `{"amount":123,"endTime":{"hour":18,"minute":31,"nano":12345,"second":14},"startTime":{"hour":17,"minute":30,"nano":1234,"second":13},"externalId":"e","forecastExternalVariableId":"efvid","shiftTypes":[{"amount":321,"externalShiftTypeId":"abc"}],"weekdays":["0"]}`), string(body))
+		assert.NilError(t, err)
+
+		// Return the proper JSON
+		json, err := json.Marshal(&want)
+		assert.NilError(t, err)
+		fmt.Fprint(w, string(json))
+	})
+
+	// Create a rule
+	dps, _, err := client.Forecast.CreateDynamicRule(context.Background(), &want, options)
+	assert.NilError(t, err)
+	assert.DeepEqual(t, &want, dps)
+
+	// Invalid options
+	_, _, err = client.Forecast.CreateDynamicRule(context.Background(), &want, &RequestOptions{})
+	assert.ErrorContains(t, err, "Required fields in the Options")
+
+	options.ExternalSectionID = String("foo")
+	client.Forecast.CreateDynamicRule(context.Background(), &want, options)
+}
+
+func TestCreateStaticRule(t *testing.T) {
+	client, mux, _, teardown := setup()
+	defer teardown()
+	options := &RequestOptions{
+		ExternalUnitID: String("d"),
+	}
+
+	want := StaticRule{
+
+		Comment:   "hello there",
+		StartDate: time.Date(2019, time.July, 12, 0, 0, 0, 0, time.UTC),
+		EndDate:   time.Date(2019, time.July, 13, 0, 0, 0, 0, time.UTC),
+		StartTime: LocalTime{
+			Hour:   17,
+			Minute: 30,
+			Nano:   1234,
+			Second: 13,
+		},
+		EndTime: LocalTime{
+			Hour:   18,
+			Minute: 31,
+			Nano:   12345,
+			Second: 14,
+		},
+		ExternalID: "e",
+		ShiftType: ShiftType{
+
+			Amount:      321,
+			ShiftTypeID: "abc",
+		},
+		Weekdays: []Weekday{Monday},
+	}
+	mux.HandleFunc("/forecasts/static-rules", func(w http.ResponseWriter, r *http.Request) {
+		// Make sure it's POST
+		testMethod(t, r, "POST")
+
+		// Options are added as Query
+		assert.Equal(t, "d", r.URL.Query().Get("externalUnitId"))
+
+		// Body contains the proper JSON
+		body, err := ioutil.ReadAll(r.Body)
+		assert.Equal(t, fmt.Sprintf("%s\n", `{"comment":"hello there","startDate":"2019-07-12T00:00:00Z","endDate":"2019-07-13T00:00:00Z","startTime":{"hour":17,"minute":30,"nano":1234,"second":13},"endTime":{"hour":18,"minute":31,"nano":12345,"second":14},"externalId":"e","repeatPeriod":0,"shiftType":{"amount":321,"externalShiftTypeId":"abc"},"weekdays":["0"]}`), string(body))
+		assert.NilError(t, err)
+
+		// Return the proper JSON
+		json, err := json.Marshal(&want)
+		assert.NilError(t, err)
+		fmt.Fprint(w, string(json))
+	})
+
+	// Create a rule
+	dps, _, err := client.Forecast.CreateStaticRule(context.Background(), &want, options)
+	assert.NilError(t, err)
+	assert.DeepEqual(t, &want, dps)
+
+	// Invalid options
+	_, _, err = client.Forecast.CreateStaticRule(context.Background(), &want, &RequestOptions{})
+	assert.ErrorContains(t, err, "Required fields in the Options")
+
+	options.ExternalSectionID = String("foo")
+	client.Forecast.CreateStaticRule(context.Background(), &want, options)
+}
+
+func TestUpdateDynamicRule(t *testing.T) {
+	client, mux, _, teardown := setup()
+	defer teardown()
+	options := &RequestOptions{
+		ExternalUnitID: String("d"),
+	}
+
+	want := DynamicRule{
+
+		Amount: 123,
+		StartTime: LocalTime{
+			Hour:   17,
+			Minute: 30,
+			Nano:   1234,
+			Second: 13,
+		},
+		EndTime: LocalTime{
+			Hour:   18,
+			Minute: 31,
+			Nano:   12345,
+			Second: 14,
+		},
+		ExternalID:                 "e",
+		ExternalForecastVariableID: "efvid",
+		ShiftTypes: []ShiftType{
+			{
+				Amount:      321,
+				ShiftTypeID: "abc",
+			},
+		},
+		Weekdays: []Weekday{Monday},
+	}
+	mux.HandleFunc("/forecasts/dynamic-rules", func(w http.ResponseWriter, r *http.Request) {
+		// Make sure it's PUT
+		testMethod(t, r, "PUT")
+
+		// Options are added as Query
+		assert.Equal(t, "d", r.URL.Query().Get("externalUnitId"))
+
+		// Body contains the proper JSON
+		body, err := ioutil.ReadAll(r.Body)
+		assert.Equal(t, fmt.Sprintf("%s\n", `{"amount":123,"endTime":{"hour":18,"minute":31,"nano":12345,"second":14},"startTime":{"hour":17,"minute":30,"nano":1234,"second":13},"externalId":"e","forecastExternalVariableId":"efvid","shiftTypes":[{"amount":321,"externalShiftTypeId":"abc"}],"weekdays":["0"]}`), string(body))
+		assert.NilError(t, err)
+		fmt.Fprint(w, ``)
+	})
+
+	// Update a rule
+	_, err := client.Forecast.UpdateDynamicRule(context.Background(), &want, options)
+	assert.NilError(t, err)
+
+	// Invalid options
+	_, err = client.Forecast.UpdateDynamicRule(context.Background(), &want, &RequestOptions{})
+	assert.ErrorContains(t, err, "Required fields in the Options")
+
+	options.ExternalSectionID = String("foo")
+	client.Forecast.UpdateDynamicRule(context.Background(), &want, options)
+}
+
+func TestUpdateStaticRule(t *testing.T) {
+	client, mux, _, teardown := setup()
+	defer teardown()
+	options := &RequestOptions{
+		ExternalUnitID: String("d"),
+	}
+
+	want := StaticRule{
+
+		Comment:   "hello there",
+		StartDate: time.Date(2019, time.July, 12, 0, 0, 0, 0, time.UTC),
+		EndDate:   time.Date(2019, time.July, 13, 0, 0, 0, 0, time.UTC),
+		StartTime: LocalTime{
+			Hour:   17,
+			Minute: 30,
+			Nano:   1234,
+			Second: 13,
+		},
+		EndTime: LocalTime{
+			Hour:   18,
+			Minute: 31,
+			Nano:   12345,
+			Second: 14,
+		},
+		ExternalID: "e",
+		ShiftType: ShiftType{
+
+			Amount:      321,
+			ShiftTypeID: "abc",
+		},
+		Weekdays: []Weekday{Monday},
+	}
+	mux.HandleFunc("/forecasts/static-rules", func(w http.ResponseWriter, r *http.Request) {
+		// Make sure it's PUT
+		testMethod(t, r, "PUT")
+
+		// Options are added as Query
+		assert.Equal(t, "d", r.URL.Query().Get("externalUnitId"))
+
+		// Body contains the proper JSON
+		body, err := ioutil.ReadAll(r.Body)
+		assert.Equal(t, fmt.Sprintf("%s\n", `{"comment":"hello there","startDate":"2019-07-12T00:00:00Z","endDate":"2019-07-13T00:00:00Z","startTime":{"hour":17,"minute":30,"nano":1234,"second":13},"endTime":{"hour":18,"minute":31,"nano":12345,"second":14},"externalId":"e","repeatPeriod":0,"shiftType":{"amount":321,"externalShiftTypeId":"abc"},"weekdays":["0"]}`), string(body))
+		assert.NilError(t, err)
+		fmt.Fprint(w, ``)
+	})
+
+	// Update a rule
+	_, err := client.Forecast.UpdateStaticRule(context.Background(), &want, options)
+	assert.NilError(t, err)
+
+	// Invalid options
+	_, err = client.Forecast.UpdateStaticRule(context.Background(), &want, &RequestOptions{})
+	assert.ErrorContains(t, err, "Required fields in the Options")
+
+	options.ExternalSectionID = String("foo")
+	client.Forecast.UpdateStaticRule(context.Background(), &want, options)
+}
+
+func TestDeleteDynamicRule(t *testing.T) {
+	client, mux, _, teardown := setup()
+	defer teardown()
+	options := &RequestOptions{
+		ExternalUnitID: String("d"),
+	}
+	wantID := "mycoolID"
+
+	mux.HandleFunc("/forecasts/dynamic-rules", func(w http.ResponseWriter, r *http.Request) {
+		// Make sure it's DELETE
+		testMethod(t, r, "DELETE")
+
+		// Options are added as Query
+		assert.Equal(t, "d", r.URL.Query().Get("externalUnitId"))
+		assert.Equal(t, wantID, r.URL.Query().Get("externalDynamicRuleId"))
+
+		fmt.Fprint(w, ``)
+	})
+
+	// Update a rule
+	_, err := client.Forecast.DeleteDynamicRule(context.Background(), wantID, options)
+	assert.NilError(t, err)
+
+	// Invalid options
+	_, err = client.Forecast.DeleteDynamicRule(context.Background(), wantID, &RequestOptions{})
+	assert.ErrorContains(t, err, "Required fields in the Options")
+
+	options.ExternalSectionID = String("foo")
+	client.Forecast.DeleteDynamicRule(context.Background(), wantID, options)
+}
+
+func TestDeleteStaticRule(t *testing.T) {
+	client, mux, _, teardown := setup()
+	defer teardown()
+	options := &RequestOptions{
+		ExternalUnitID: String("d"),
+	}
+	wantID := "mycoolID"
+
+	mux.HandleFunc("/forecasts/static-rules", func(w http.ResponseWriter, r *http.Request) {
+		// Make sure it's DELETE
+		testMethod(t, r, "DELETE")
+
+		// Options are added as Query
+		assert.Equal(t, "d", r.URL.Query().Get("externalUnitId"))
+		assert.Equal(t, wantID, r.URL.Query().Get("externalStaticRuleId"))
+
+		fmt.Fprint(w, ``)
+	})
+
+	// Update a rule
+	_, err := client.Forecast.DeleteStaticRule(context.Background(), wantID, options)
+	assert.NilError(t, err)
+
+	// Invalid options
+	_, err = client.Forecast.DeleteStaticRule(context.Background(), wantID, &RequestOptions{})
+	assert.ErrorContains(t, err, "Required fields in the Options")
+
+	options.ExternalSectionID = String("foo")
+	client.Forecast.DeleteStaticRule(context.Background(), wantID, options)
 }

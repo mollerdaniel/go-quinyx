@@ -74,8 +74,8 @@ type AggregatedPayload struct {
 	StartTime *Timestamp `json:"startTime,omitempty"`
 }
 
-// RequestOptions is the options object for querying forecast
-type RequestOptions struct {
+// RequestRangeOptions is the options object for querying forecast
+type RequestRangeOptions struct {
 	// StartTime is required
 	StartTime time.Time `url:"startTime"`
 	// EndTime is required
@@ -86,8 +86,8 @@ type RequestOptions struct {
 	ExternalUnitID *string `url:"externalUnitId"`
 }
 
-// EditCalculatedOptions is the options object for editing calculated forecast
-type EditCalculatedOptions struct {
+// RequestOptions is the options object for editing calculated forecast
+type RequestOptions struct {
 	// ExternalSectionID is optional
 	ExternalSectionID *string `url:"externalSectionId,omitempty"`
 	// ExternalUnitID is required
@@ -136,6 +136,240 @@ const (
 	Sunday            = "6"
 )
 
+// DynamicRule defines a dynamic rule
+type DynamicRule struct {
+	Amount                     int64       `json:"amount"`
+	EndTime                    LocalTime   `json:"endTime"`
+	StartTime                  LocalTime   `json:"startTime"`
+	ExternalID                 string      `json:"externalId"`
+	ExternalForecastVariableID string      `json:"forecastExternalVariableId"`
+	ShiftTypes                 []ShiftType `json:"shiftTypes"`
+	Weekdays                   []Weekday   `json:"weekdays"`
+}
+
+// StaticRule defines a static rule
+type StaticRule struct {
+	Comment      string    `json:"comment"`
+	StartDate    time.Time `json:"startDate"`
+	EndDate      time.Time `json:"endDate"`
+	StartTime    LocalTime `json:"startTime"`
+	EndTime      LocalTime `json:"endTime"`
+	ExternalID   string    `json:"externalId"`
+	RepeatPeriod int       `json:"repeatPeriod"`
+	ShiftType    ShiftType `json:"shiftType"`
+	Weekdays     []Weekday `json:"weekdays"`
+}
+
+// LocalTime is a specific time on a day
+type LocalTime struct {
+	Hour   int `json:"hour"`
+	Minute int `json:"minute"`
+	Nano   int `json:"nano"`
+	Second int `json:"second"`
+}
+
+// ShiftType ShiftType
+type ShiftType struct {
+	Amount      int    `json:"amount"`
+	ShiftTypeID string `json:"externalShiftTypeId"`
+}
+
+// GetDynamicRules lists dynamic rules
+func (s *ForecastService) GetDynamicRules(ctx context.Context, RequestOptions *RequestOptions) ([]*DynamicRule, *Response, error) {
+	var r []*DynamicRule
+	u := "forecasts/dynamic-rules"
+	if !RequestOptions.hasRequiredFields() {
+		return r, nil, ErrorReqfieldsMissing
+	}
+	req, err := s.client.NewRequest("GET", u, nil)
+	if err != nil {
+		return r, nil, err
+	}
+	v, err := query.Values(RequestOptions)
+	if err != nil {
+		return r, nil, err
+	}
+	req.URL.RawQuery = v.Encode()
+
+	resp, err := s.client.Do(ctx, req, &r)
+	if err != nil {
+		return r, resp, err
+	}
+	return r, resp, nil
+}
+
+// GetStaticRules lists static rules
+func (s *ForecastService) GetStaticRules(ctx context.Context, RequestOptions *RequestOptions) ([]*StaticRule, *Response, error) {
+	var r []*StaticRule
+	u := "forecasts/static-rules"
+	if !RequestOptions.hasRequiredFields() {
+		return r, nil, ErrorReqfieldsMissing
+	}
+	req, err := s.client.NewRequest("GET", u, nil)
+	if err != nil {
+		return r, nil, err
+	}
+	v, err := query.Values(RequestOptions)
+	if err != nil {
+		return r, nil, err
+	}
+	req.URL.RawQuery = v.Encode()
+
+	resp, err := s.client.Do(ctx, req, &r)
+	if err != nil {
+		return r, resp, err
+	}
+	return r, resp, nil
+}
+
+// CreateDynamicRule creates a dynamic rule
+func (s *ForecastService) CreateDynamicRule(ctx context.Context, rule *DynamicRule, RequestOptions *RequestOptions) (*DynamicRule, *Response, error) {
+	var r *DynamicRule
+	u := "forecasts/dynamic-rules"
+	if !RequestOptions.hasRequiredFields() {
+		return r, nil, ErrorReqfieldsMissing
+	}
+	req, err := s.client.NewRequest("POST", u, rule)
+	if err != nil {
+		return r, nil, err
+	}
+
+	v, err := query.Values(RequestOptions)
+	if err != nil {
+		return r, nil, err
+	}
+	req.URL.RawQuery = v.Encode()
+
+	resp, err := s.client.Do(ctx, req, &r)
+	return r, resp, err
+}
+
+// CreateStaticRule creates a static rule
+func (s *ForecastService) CreateStaticRule(ctx context.Context, rule *StaticRule, RequestOptions *RequestOptions) (*StaticRule, *Response, error) {
+	var r *StaticRule
+	u := "forecasts/static-rules"
+	if !RequestOptions.hasRequiredFields() {
+		return r, nil, ErrorReqfieldsMissing
+	}
+	req, err := s.client.NewRequest("POST", u, rule)
+	if err != nil {
+		return r, nil, err
+	}
+
+	v, err := query.Values(RequestOptions)
+	if err != nil {
+		return r, nil, err
+	}
+	req.URL.RawQuery = v.Encode()
+
+	resp, err := s.client.Do(ctx, req, &r)
+	return r, resp, err
+}
+
+// UpdateDynamicRule updates the existing dynamic rule
+func (s *ForecastService) UpdateDynamicRule(ctx context.Context, rule *DynamicRule, RequestOptions *RequestOptions) (*Response, error) {
+	u := "forecasts/dynamic-rules"
+	if !RequestOptions.hasRequiredFields() {
+		return nil, ErrorReqfieldsMissing
+	}
+
+	req, err := s.client.NewRequest("PUT", u, rule)
+	if err != nil {
+		return nil, err
+	}
+	v, err := query.Values(RequestOptions)
+	if err != nil {
+		return nil, err
+	}
+	req.URL.RawQuery = v.Encode()
+
+	resp, err := s.client.Do(ctx, req, nil)
+	return resp, err
+}
+
+// UpdateStaticRule updates the existing static rule
+func (s *ForecastService) UpdateStaticRule(ctx context.Context, rule *StaticRule, RequestOptions *RequestOptions) (*Response, error) {
+	u := "forecasts/static-rules"
+	if !RequestOptions.hasRequiredFields() {
+		return nil, ErrorReqfieldsMissing
+	}
+
+	req, err := s.client.NewRequest("PUT", u, rule)
+	if err != nil {
+		return nil, err
+	}
+	v, err := query.Values(RequestOptions)
+	if err != nil {
+		return nil, err
+	}
+	req.URL.RawQuery = v.Encode()
+
+	resp, err := s.client.Do(ctx, req, nil)
+	return resp, err
+}
+
+// DeleteDynamicRule deletes a dynamic rule
+func (s *ForecastService) DeleteDynamicRule(ctx context.Context, dynamicRuleID string, RequestOptions *RequestOptions) (*Response, error) {
+	u := "forecasts/dynamic-rules"
+	if !RequestOptions.hasRequiredFields() {
+		return nil, ErrorReqfieldsMissing
+	}
+
+	// url parameters for dynamic-rule-controller
+	type params struct {
+		ExternalDynamicRuleID string  `url:"externalDynamicRuleId"`
+		ExternalSectionID     *string `url:"externalSectionId,omitempty"`
+		ExternalUnitID        *string `url:"externalUnitId"`
+	}
+	req, err := s.client.NewRequest("DELETE", u, nil)
+	if err != nil {
+		return nil, err
+	}
+	v, err := query.Values(params{
+		ExternalDynamicRuleID: dynamicRuleID,
+		ExternalSectionID:     RequestOptions.ExternalSectionID,
+		ExternalUnitID:        RequestOptions.ExternalUnitID,
+	})
+	if err != nil {
+		return nil, err
+	}
+	req.URL.RawQuery = v.Encode()
+
+	resp, err := s.client.Do(ctx, req, nil)
+	return resp, err
+}
+
+// DeleteStaticRule deletes a static rule
+func (s *ForecastService) DeleteStaticRule(ctx context.Context, staticRuleID string, RequestOptions *RequestOptions) (*Response, error) {
+	u := "forecasts/static-rules"
+	if !RequestOptions.hasRequiredFields() {
+		return nil, ErrorReqfieldsMissing
+	}
+
+	// url parameters for static-rule-controller
+	type params struct {
+		ExternalStaticRuleID string  `url:"externalStaticRuleId"`
+		ExternalSectionID    *string `url:"externalSectionId,omitempty"`
+		ExternalUnitID       *string `url:"externalUnitId"`
+	}
+	req, err := s.client.NewRequest("DELETE", u, nil)
+	if err != nil {
+		return nil, err
+	}
+	v, err := query.Values(params{
+		ExternalStaticRuleID: staticRuleID,
+		ExternalSectionID:    RequestOptions.ExternalSectionID,
+		ExternalUnitID:       RequestOptions.ExternalUnitID,
+	})
+	if err != nil {
+		return nil, err
+	}
+	req.URL.RawQuery = v.Encode()
+
+	resp, err := s.client.Do(ctx, req, nil)
+	return resp, err
+}
+
 // UploadActualData sends raw datapoints to Quinyx Forecast API
 func (s *ForecastService) UploadActualData(ctx context.Context, appendData bool, dil *DataProviderInputList) (*Response, error) {
 	u := fmt.Sprintf("forecasts/actual-data?appendData=%v", appendData)
@@ -150,10 +384,7 @@ func (s *ForecastService) UploadActualData(ctx context.Context, appendData bool,
 	}
 	var tagres *Tag
 	resp, err := s.client.Do(ctx, req, &tagres)
-	if err != nil {
-		return resp, err
-	}
-	return resp, nil
+	return resp, err
 }
 
 // UploadBudgetData sends budget datapoints to Quinyx Forecast API
@@ -170,13 +401,10 @@ func (s *ForecastService) UploadBudgetData(ctx context.Context, appendData bool,
 	}
 	var tagres *Tag
 	resp, err := s.client.Do(ctx, req, &tagres)
-	if err != nil {
-		return resp, err
-	}
-	return resp, nil
+	return resp, err
 }
 
-func (g *RequestOptions) hasRequiredFields() bool {
+func (g *RequestRangeOptions) hasRequiredFields() bool {
 	if g == nil {
 		return false
 	}
@@ -186,11 +414,11 @@ func (g *RequestOptions) hasRequiredFields() bool {
 	return true
 }
 
-func (g *RequestOptions) dayDistance() float64 {
+func (g *RequestRangeOptions) dayDistance() float64 {
 	return math.Floor(g.EndTime.Sub(g.StartTime).Hours() / 24)
 }
 
-func (g *EditCalculatedOptions) hasRequiredFields() bool {
+func (g *RequestOptions) hasRequiredFields() bool {
 	if g == nil {
 		return false
 	}
@@ -202,19 +430,19 @@ func (g *EditCalculatedOptions) hasRequiredFields() bool {
 
 // GetActualData gets the actual data previously uploaded for the given forecast variable.
 // The range between these two dates can not exceed 120 days.
-func (s *ForecastService) GetActualData(ctx context.Context, externalForecastVariableID string, requestoptions *RequestOptions) ([]*DataProvider, *Response, error) {
+func (s *ForecastService) GetActualData(ctx context.Context, externalForecastVariableID string, RequestRangeOptions *RequestRangeOptions) ([]*DataProvider, *Response, error) {
 	u := fmt.Sprintf("forecasts/forecast-variables/%v/actual-data", externalForecastVariableID)
-	if !requestoptions.hasRequiredFields() {
+	if !RequestRangeOptions.hasRequiredFields() {
 		return nil, nil, ErrorReqfieldsMissing
 	}
-	if requestoptions.dayDistance() > maxDaysRange {
+	if RequestRangeOptions.dayDistance() > maxDaysRange {
 		return nil, nil, ErrorDaterangeTooWide
 	}
 	req, err := s.client.NewRequest("GET", u, nil)
 	if err != nil {
 		return nil, nil, err
 	}
-	v, err := query.Values(requestoptions)
+	v, err := query.Values(RequestRangeOptions)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -231,19 +459,19 @@ func (s *ForecastService) GetActualData(ctx context.Context, externalForecastVar
 // Deleting the actual data previously uploaded for the given forecast variable.
 // This operation will also delete the corresponding calculated forecast data.
 // The startTime and endTime must be at the start of hour and the range between these two dates can not exceed 120 days.
-func (s *ForecastService) DeleteActualData(ctx context.Context, externalForecastVariableID string, requestoptions *RequestOptions) (*Response, error) {
+func (s *ForecastService) DeleteActualData(ctx context.Context, externalForecastVariableID string, RequestRangeOptions *RequestRangeOptions) (*Response, error) {
 	u := fmt.Sprintf("forecasts/forecast-variables/%v/actual-data", externalForecastVariableID)
-	if !requestoptions.hasRequiredFields() {
+	if !RequestRangeOptions.hasRequiredFields() {
 		return nil, ErrorReqfieldsMissing
 	}
-	if requestoptions.dayDistance() > maxDaysRange {
+	if RequestRangeOptions.dayDistance() > maxDaysRange {
 		return nil, ErrorDaterangeTooWide
 	}
 	req, err := s.client.NewRequest("DELETE", u, nil)
 	if err != nil {
 		return nil, err
 	}
-	v, err := query.Values(requestoptions)
+	v, err := query.Values(RequestRangeOptions)
 	if err != nil {
 		return nil, err
 	}
@@ -257,19 +485,19 @@ func (s *ForecastService) DeleteActualData(ctx context.Context, externalForecast
 
 // GetActualDataStream gets the actual data previously uploaded for the given forecast variable.
 // The range between these two dates can not exceed 120 days.
-func (s *ForecastService) GetActualDataStream(ctx context.Context, externalForecastVariableID string, requestoptions *RequestOptions) ([]*DataProvider, *Response, error) {
+func (s *ForecastService) GetActualDataStream(ctx context.Context, externalForecastVariableID string, RequestRangeOptions *RequestRangeOptions) ([]*DataProvider, *Response, error) {
 	u := fmt.Sprintf("forecasts/forecast-variables/%v/actual-data-stream", externalForecastVariableID)
-	if !requestoptions.hasRequiredFields() {
+	if !RequestRangeOptions.hasRequiredFields() {
 		return nil, nil, ErrorReqfieldsMissing
 	}
-	if requestoptions.dayDistance() > maxDaysRange {
+	if RequestRangeOptions.dayDistance() > maxDaysRange {
 		return nil, nil, ErrorDaterangeTooWide
 	}
 	req, err := s.client.NewRequest("GET", u, nil)
 	if err != nil {
 		return nil, nil, err
 	}
-	v, err := query.Values(requestoptions)
+	v, err := query.Values(RequestRangeOptions)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -284,19 +512,19 @@ func (s *ForecastService) GetActualDataStream(ctx context.Context, externalForec
 
 // GetAggregatedData gets the aggregated data for the given forecast variable.
 // The range between these two dates can not exceed 120 days.
-func (s *ForecastService) GetAggregatedData(ctx context.Context, externalForecastVariableID string, requestoptions *RequestOptions) ([]*AggregatedPayload, *Response, error) {
+func (s *ForecastService) GetAggregatedData(ctx context.Context, externalForecastVariableID string, RequestRangeOptions *RequestRangeOptions) ([]*AggregatedPayload, *Response, error) {
 	u := fmt.Sprintf("forecasts/forecast-variables/%v/aggregated-data", externalForecastVariableID)
-	if !requestoptions.hasRequiredFields() {
+	if !RequestRangeOptions.hasRequiredFields() {
 		return nil, nil, ErrorReqfieldsMissing
 	}
-	if requestoptions.dayDistance() > maxDaysRange {
+	if RequestRangeOptions.dayDistance() > maxDaysRange {
 		return nil, nil, ErrorDaterangeTooWide
 	}
 	req, err := s.client.NewRequest("GET", u, nil)
 	if err != nil {
 		return nil, nil, err
 	}
-	v, err := query.Values(requestoptions)
+	v, err := query.Values(RequestRangeOptions)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -311,19 +539,19 @@ func (s *ForecastService) GetAggregatedData(ctx context.Context, externalForecas
 
 // GetCalculatedForecast gets the calculated forecast for the given forecast variable.
 // The range between these two dates can not exceed 120 days.
-func (s *ForecastService) GetCalculatedForecast(ctx context.Context, externalForecastVariableID string, requestoptions *RequestOptions) ([]*CalculatedForecast, *Response, error) {
+func (s *ForecastService) GetCalculatedForecast(ctx context.Context, externalForecastVariableID string, RequestRangeOptions *RequestRangeOptions) ([]*CalculatedForecast, *Response, error) {
 	u := fmt.Sprintf("forecasts/forecast-variables/%v/calculated-forecast", externalForecastVariableID)
-	if !requestoptions.hasRequiredFields() {
+	if !RequestRangeOptions.hasRequiredFields() {
 		return nil, nil, ErrorReqfieldsMissing
 	}
-	if requestoptions.dayDistance() > maxDaysRange {
+	if RequestRangeOptions.dayDistance() > maxDaysRange {
 		return nil, nil, ErrorDaterangeTooWide
 	}
 	req, err := s.client.NewRequest("GET", u, nil)
 	if err != nil {
 		return nil, nil, err
 	}
-	v, err := query.Values(requestoptions)
+	v, err := query.Values(RequestRangeOptions)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -337,16 +565,16 @@ func (s *ForecastService) GetCalculatedForecast(ctx context.Context, externalFor
 }
 
 // EditCalculatedForecast changes the calculated forecast.
-func (s *ForecastService) EditCalculatedForecast(ctx context.Context, externalForecastVariableID string, externalForecastConfigurationID string, requestoptions *EditCalculatedOptions, modrequest *EditCalculatedRequest) (*Response, error) {
+func (s *ForecastService) EditCalculatedForecast(ctx context.Context, externalForecastVariableID string, externalForecastConfigurationID string, RequestRangeOptions *RequestOptions, modrequest *EditCalculatedRequest) (*Response, error) {
 	u := fmt.Sprintf("forecasts/forecast-variables/%v/forecast-configurations/%v/edit-forecast", externalForecastVariableID, externalForecastConfigurationID)
-	if !requestoptions.hasRequiredFields() {
+	if !RequestRangeOptions.hasRequiredFields() {
 		return nil, ErrorReqfieldsMissing
 	}
 	req, err := s.client.NewRequest("POST", u, modrequest)
 	if err != nil {
 		return nil, err
 	}
-	v, err := query.Values(requestoptions)
+	v, err := query.Values(RequestRangeOptions)
 	if err != nil {
 		return nil, err
 	}
@@ -360,19 +588,19 @@ func (s *ForecastService) EditCalculatedForecast(ctx context.Context, externalFo
 
 // GetForecastData gets the uploaded forecast data for the given forecast variable.
 // The range between these two dates can not exceed 120 days.
-func (s *ForecastService) GetForecastData(ctx context.Context, externalForecastVariableID string, requestoptions *RequestOptions) ([]*DataProvider, *Response, error) {
+func (s *ForecastService) GetForecastData(ctx context.Context, externalForecastVariableID string, RequestRangeOptions *RequestRangeOptions) ([]*DataProvider, *Response, error) {
 	u := fmt.Sprintf("forecasts/forecast-variables/%v/forecast-data", externalForecastVariableID)
-	if !requestoptions.hasRequiredFields() {
+	if !RequestRangeOptions.hasRequiredFields() {
 		return nil, nil, ErrorReqfieldsMissing
 	}
-	if requestoptions.dayDistance() > maxDaysRange {
+	if RequestRangeOptions.dayDistance() > maxDaysRange {
 		return nil, nil, ErrorDaterangeTooWide
 	}
 	req, err := s.client.NewRequest("GET", u, nil)
 	if err != nil {
 		return nil, nil, err
 	}
-	v, err := query.Values(requestoptions)
+	v, err := query.Values(RequestRangeOptions)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -387,19 +615,19 @@ func (s *ForecastService) GetForecastData(ctx context.Context, externalForecastV
 
 // DeleteForecastData deletes the previously uploaded forecast data for the the given forecast variable.
 // The startTime and endTime must be at the start of hour and the range between these two dates can not exceed 120 days.
-func (s *ForecastService) DeleteForecastData(ctx context.Context, externalForecastVariableID string, requestoptions *RequestOptions) (*Response, error) {
+func (s *ForecastService) DeleteForecastData(ctx context.Context, externalForecastVariableID string, RequestRangeOptions *RequestRangeOptions) (*Response, error) {
 	u := fmt.Sprintf("forecasts/forecast-variables/%v/forecast-data", externalForecastVariableID)
-	if !requestoptions.hasRequiredFields() {
+	if !RequestRangeOptions.hasRequiredFields() {
 		return nil, ErrorReqfieldsMissing
 	}
-	if requestoptions.dayDistance() > maxDaysRange {
+	if RequestRangeOptions.dayDistance() > maxDaysRange {
 		return nil, ErrorDaterangeTooWide
 	}
 	req, err := s.client.NewRequest("DELETE", u, nil)
 	if err != nil {
 		return nil, err
 	}
-	v, err := query.Values(requestoptions)
+	v, err := query.Values(RequestRangeOptions)
 	if err != nil {
 		return nil, err
 	}

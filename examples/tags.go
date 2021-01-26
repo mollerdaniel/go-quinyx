@@ -15,7 +15,7 @@ import (
 func main() {
 	ctx := context.Background()
 
-	// Oauth2 Config
+	// OAuth2 Config
 	conf := clientcredentials.Config{
 		ClientID:     os.Getenv("CLIENTID"),
 		ClientSecret: os.Getenv("CLIENTSECRET"),
