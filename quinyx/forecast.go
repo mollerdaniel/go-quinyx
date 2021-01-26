@@ -310,26 +310,15 @@ func (s *ForecastService) UpdateStaticRule(ctx context.Context, rule *StaticRule
 
 // DeleteDynamicRule deletes a dynamic rule
 func (s *ForecastService) DeleteDynamicRule(ctx context.Context, dynamicRuleID string, RequestOptions *RequestOptions) (*Response, error) {
-	u := "forecasts/dynamic-rules"
+	u := fmt.Sprintf("forecasts/dynamic-rules/%s", dynamicRuleID)
 	if !RequestOptions.hasRequiredFields() {
 		return nil, ErrorReqfieldsMissing
-	}
-
-	// url parameters for dynamic-rule-controller
-	type params struct {
-		ExternalDynamicRuleID string  `url:"externalDynamicRuleId"`
-		ExternalSectionID     *string `url:"externalSectionId,omitempty"`
-		ExternalUnitID        *string `url:"externalUnitId"`
 	}
 	req, err := s.client.NewRequest("DELETE", u, nil)
 	if err != nil {
 		return nil, err
 	}
-	v, err := query.Values(params{
-		ExternalDynamicRuleID: dynamicRuleID,
-		ExternalSectionID:     RequestOptions.ExternalSectionID,
-		ExternalUnitID:        RequestOptions.ExternalUnitID,
-	})
+	v, err := query.Values(RequestOptions)
 	if err != nil {
 		return nil, err
 	}
@@ -341,26 +330,16 @@ func (s *ForecastService) DeleteDynamicRule(ctx context.Context, dynamicRuleID s
 
 // DeleteStaticRule deletes a static rule
 func (s *ForecastService) DeleteStaticRule(ctx context.Context, staticRuleID string, RequestOptions *RequestOptions) (*Response, error) {
-	u := "forecasts/static-rules"
+	u := fmt.Sprintf("forecasts/static-rules/%s", staticRuleID)
 	if !RequestOptions.hasRequiredFields() {
 		return nil, ErrorReqfieldsMissing
 	}
 
-	// url parameters for static-rule-controller
-	type params struct {
-		ExternalStaticRuleID string  `url:"externalStaticRuleId"`
-		ExternalSectionID    *string `url:"externalSectionId,omitempty"`
-		ExternalUnitID       *string `url:"externalUnitId"`
-	}
 	req, err := s.client.NewRequest("DELETE", u, nil)
 	if err != nil {
 		return nil, err
 	}
-	v, err := query.Values(params{
-		ExternalStaticRuleID: staticRuleID,
-		ExternalSectionID:    RequestOptions.ExternalSectionID,
-		ExternalUnitID:       RequestOptions.ExternalUnitID,
-	})
+	v, err := query.Values(RequestOptions)
 	if err != nil {
 		return nil, err
 	}
