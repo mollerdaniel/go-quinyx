@@ -349,23 +349,6 @@ func (s *ForecastService) DeleteStaticRule(ctx context.Context, staticRuleID str
 	return resp, err
 }
 
-// UploadActualData sends raw datapoints to Quinyx Forecast API
-func (s *ForecastService) UploadActualData(ctx context.Context, appendData bool, dil *DataProviderInputList) (*Response, error) {
-	u := fmt.Sprintf("forecasts/actual-data?appendData=%v", appendData)
-	if dil != nil {
-		if len(dil.DataProviderInputs) > maxRowsPerCall {
-			return nil, fmt.Errorf("The total amount of data rows must not exceed 366 in a single call")
-		}
-	}
-	req, err := s.client.NewRequest("POST", u, dil)
-	if err != nil {
-		return nil, err
-	}
-	var tagres *Tag
-	resp, err := s.client.Do(ctx, req, &tagres)
-	return resp, err
-}
-
 // UploadBudgetData sends budget datapoints to Quinyx Forecast API
 func (s *ForecastService) UploadBudgetData(ctx context.Context, appendData bool, dil *DataProviderInputList) (*Response, error) {
 	u := fmt.Sprintf("forecasts/budget-data?appendData=%v", appendData)
@@ -405,61 +388,6 @@ func (g *RequestOptions) hasRequiredFields() bool {
 		return false
 	}
 	return true
-}
-
-// GetActualData gets the actual data previously uploaded for the given forecast variable.
-// The range between these two dates can not exceed 120 days.
-func (s *ForecastService) GetActualData(ctx context.Context, externalForecastVariableID string, RequestRangeOptions *RequestRangeOptions) ([]*DataProvider, *Response, error) {
-	u := fmt.Sprintf("forecasts/forecast-variables/%v/actual-data", externalForecastVariableID)
-	if !RequestRangeOptions.hasRequiredFields() {
-		return nil, nil, ErrorReqfieldsMissing
-	}
-	if RequestRangeOptions.dayDistance() > maxDaysRange {
-		return nil, nil, ErrorDaterangeTooWide
-	}
-	req, err := s.client.NewRequest("GET", u, nil)
-	if err != nil {
-		return nil, nil, err
-	}
-	v, err := query.Values(RequestRangeOptions)
-	if err != nil {
-		return nil, nil, err
-	}
-	req.URL.RawQuery = v.Encode()
-	var dp []*DataProvider
-	resp, err := s.client.Do(ctx, req, &dp)
-	if err != nil {
-		return nil, resp, err
-	}
-	return dp, resp, nil
-}
-
-// DeleteActualData deletes actual data.
-// Deleting the actual data previously uploaded for the given forecast variable.
-// This operation will also delete the corresponding calculated forecast data.
-// The startTime and endTime must be at the start of hour and the range between these two dates can not exceed 120 days.
-func (s *ForecastService) DeleteActualData(ctx context.Context, externalForecastVariableID string, RequestRangeOptions *RequestRangeOptions) (*Response, error) {
-	u := fmt.Sprintf("forecasts/forecast-variables/%v/actual-data", externalForecastVariableID)
-	if !RequestRangeOptions.hasRequiredFields() {
-		return nil, ErrorReqfieldsMissing
-	}
-	if RequestRangeOptions.dayDistance() > maxDaysRange {
-		return nil, ErrorDaterangeTooWide
-	}
-	req, err := s.client.NewRequest("DELETE", u, nil)
-	if err != nil {
-		return nil, err
-	}
-	v, err := query.Values(RequestRangeOptions)
-	if err != nil {
-		return nil, err
-	}
-	req.URL.RawQuery = v.Encode()
-	resp, err := s.client.Do(ctx, req, nil)
-	if err != nil {
-		return resp, err
-	}
-	return resp, nil
 }
 
 // GetActualDataStream gets the actual data previously uploaded for the given forecast variable.
